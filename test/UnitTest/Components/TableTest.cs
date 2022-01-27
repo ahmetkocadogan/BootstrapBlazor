@@ -43,10 +43,10 @@ public class TableTest : BootstrapBlazorTestBase
         /// 
         /// </summary>
         /// <returns></returns>
-        public static List<Foo> GenerateFoo( int count = 80) => Enumerable.Range(1, count).Select(i => new Foo()
+        public static List<Foo> GenerateFoo( int count = 10) => Enumerable.Range(1, count).Select(i => new Foo()
         {
             Id = i,
-            Name = "Foo",
+            Name = "Foo" + i.ToString(),
             Education = random.Next(1, 100) > 50 ? EnumEducation.Primary : EnumEducation.Middel
         }).ToList();
         private static readonly Random random = new();
@@ -100,34 +100,45 @@ public class TableTest : BootstrapBlazorTestBase
         public static List<DetailRow> GenerateDetailRow(int count = 3) => Enumerable.Range(1, count).Select(i => new DetailRow()
         {
             Id = i,
-            Name = "DetailRow",
+            Name = "DetailRow" + i.ToString(),
             DateTime=DateTime.Now.AddDays(-count)
         }).ToList();
 
     }
 
     private List<Foo>? Items { get; set; } = Foo.GenerateFoo();
-    private List<DetailRow>? DetailRows { get; set; } = DetailRow.GenerateDetailRow();
+    private List<DetailRow>? DetailRows(int i) => DetailRow.GenerateDetailRow(i);
 
     [Fact]
-    public void TablesDetailRow_Ok()
+    public async void TablesDetailRow_Ok()
     {
+        var closed = false;
 
         var cut = Context.RenderComponent<Table<Foo>>(builder => {
+            builder.Add(a => a.AutoGenerateColumns, true);
             builder.Add(a => a.Items, Items);
             builder.Add(a => a.IsDetails, _=true);
-            //builder.Add(a => a.DetailRowTemplate, GenerateDetailRow);
+            builder.Add(a => a.OnAfterRenderCallback, OnAfterRenderCallback());
+            builder.Add(a => a.DetailRowTemplate, GenerateDetailRow());
             }
         );
+        //cut.InvokeAsync(() => cut.Instance.OnAfterRenderCallback());
         Assert.Contains("class=\"form-control checkbox-list\"", cut.Markup);
     }
-     
+
+    Func<Table<Foo>, Task>? OnAfterRenderCallback()
+    {
+        return  _ => Task.CompletedTask;
+    }
+    
+
     private RenderFragment<Foo> GenerateDetailRow() 
     {
         return  new RenderFragment<Foo>(item => builder =>
         {
             builder.OpenComponent(0, typeof(Table<DetailRow>));
-            builder.AddAttribute(1, nameof(Table<DetailRow>.Items), DetailRows);
+            builder.AddAttribute(1, nameof(Table<DetailRow>.Items), DetailRows(item.Id));
+            builder.AddAttribute(2, nameof(Table<DetailRow>.AutoGenerateColumns), true);
             builder.CloseComponent();
         }); 
     }
