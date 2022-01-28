@@ -108,29 +108,63 @@ public class TableTest : BootstrapBlazorTestBase
 
     private List<Foo>? Items { get; set; } = Foo.GenerateFoo();
     private List<DetailRow>? DetailRows(int i) => DetailRow.GenerateDetailRow(i);
+    private bool flag;
+        // 异步点击
+        TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
 
     [Fact]
     public async void TablesDetailRow_Ok()
     {
-        var closed = false;
+        var cut = Context.RenderComponent<BootstrapBlazorRoot>(pb =>
+        {
+            pb.AddChildContent(TablesDetailRow());
+        });
+        var table = cut.FindComponent<Table<Foo>>();
+        await table.InvokeAsync(async () => { await table.Instance.QueryAsync(); tcs.SetResult(true);});
+        await tcs.Task;
+        var html = table.Markup;
 
-        var cut = Context.RenderComponent<Table<Foo>>(builder => {
-            builder.Add(a => a.AutoGenerateColumns, true);
-            builder.Add(a => a.Items, Items);
-            builder.Add(a => a.IsDetails, _=true);
-            builder.Add(a => a.OnAfterRenderCallback, OnAfterRenderCallback());
-            builder.Add(a => a.DetailRowTemplate, GenerateDetailRow());
-            }
-        );
+
+        //因为懒加载 loading...无法测试 , :-<
+
+        //var cut = Context.RenderComponent<Table<Foo>>(builder => {
+        //    builder.Add(a => a.AutoGenerateColumns, true);
+        //    builder.Add(a => a.Items, Items);
+        //    builder.Add(a => a.IsDetails, _=true);
+        //    builder.Add(a => a.OnAfterRenderCallback, OnAfterRenderCallback());
+        //    builder.Add(a => a.DetailRowTemplate, GenerateDetailRow());
+        //    }
+        //);
         //cut.InvokeAsync(() => cut.Instance.OnAfterRenderCallback());
         Assert.Contains("class=\"form-control checkbox-list\"", cut.Markup);
     }
+    public RenderFragment TablesDetailRow() => builder =>
+    {
+        builder.OpenComponent(0, typeof(Table<Foo>));
+        builder.AddAttribute(1, nameof(Table<Foo>.OnQueryAsync),((QueryPageOptions options) => OnQueryAsync(options)));
+        //builder.AddAttribute(1, nameof(Table<Foo>.Items), Items);
+        builder.AddAttribute(2, nameof(Table<Foo>.IsDetails), _ = true);
+        builder.AddAttribute(3, nameof(Table<Foo>.OnAfterRenderCallback), OnAfterRenderCallback());
+        builder.AddAttribute(4, nameof(Table<Foo>.DetailRowTemplate), GenerateDetailRow());
+        builder.AddAttribute(5, nameof(Table<Foo>.AutoGenerateColumns), true);
+        builder.CloseComponent();
+    };
+
 
     Func<Table<Foo>, Task>? OnAfterRenderCallback()
     {
         return  _ => Task.CompletedTask;
     }
-    
+    public Task<QueryData<Foo>> OnQueryAsync(QueryPageOptions options)
+    {
+        flag = !flag;
+        return Task.FromResult( new QueryData<Foo>()
+        {
+            TotalCount = flag?0: Items?.Count??0,
+            Items = flag ? null : Items
+        }) ;
+    }
+
 
     private RenderFragment<Foo> GenerateDetailRow() 
     {
