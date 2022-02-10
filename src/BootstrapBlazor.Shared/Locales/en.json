@@ -2782,5 +2782,28 @@
     "LastUpdateTime": "UpdateTime",
     "CurrentDistance": "CurrentDistance",
     "TotalDistance": "TotalDistance"
+  },
+  "BootstrapBlazor.Shared.Samples.Notifications": {
+    "Title": "Notifications",
+    "BaseUsageText": "Basic usage",
+    "IntroText1": "Notification information through browser API.",
+    "IntroText2": "Click the button to notification.",
+    "IntroText3": "Note: For security reasons, when a web page tries to access notifications, the user is notified and asked to grant permission.",
+    "NotificationButtonText": "Display notification",
+    "NotificationSilentButtonText": "Display silent notification",
+    "CheckPermissionText": "Check Permission",
+    "PermissionText": "Permission",
+    "SilentText": "Silent",
+    "TitleText": "Title",
+    "MessageText": "Message",
+    "IconText": "Icon",
+    "SoundText": "The audio URL to play when the notification",
+    "CheckPermissionResultSuccess": "Check permission success",
+    "CheckPermissionResultFailed": "Check permission failed",
+    "NotificationResultSuccess": "Call Notification success",
+    "NotificationResultFailed": "Call Notification failed",
+    "BasicUsageTips": "Uses the injection service <code>NotificationService</code> to call the <code>DisplayNotification</code> method.",
+    "OnClickText": "Click Notification callback methods"
+
   }
 }

@@ -54,6 +54,7 @@ public static class BootstrapBlazorServiceCollectionExtensions
         services.ConfigureBootstrapBlazorOption(configureOptions);
 
         services.TryAddSingleton<GeolocationService>();
+        services.TryAddSingleton<NotificationService>();
         services.TryAddSingleton<IIPLocatorProvider, DefaultIPLocatorProvider>();
         services.TryAddSingleton<IConfigureOptions<IPLocatorOption>, ConfigureOptions<IPLocatorOption>>();
         return services;

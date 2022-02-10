@@ -468,6 +468,12 @@ public sealed partial class NavMenu
             new()
             {
                 IsNew = true,
+                Text = Localizer["Ip"],
+                Url = "ips"
+            },
+            new()
+            {
+                IsNew = true,
                 Text = Localizer["LinkButton"],
                 Url = "linkbuttons"
             },
@@ -481,12 +487,6 @@ public sealed partial class NavMenu
                 IsNew = true,
                 Text = Localizer["Locator"],
                 Url = "locator"
-            },
-            new()
-            {
-                IsNew = true,
-                Text = Localizer["Ip"],
-                Url = "ips"
             },
             new()
             {
@@ -770,6 +770,12 @@ public sealed partial class NavMenu
             {
                 Text = Localizer["Modal"],
                 Url = "modals"
+            },
+            new()
+            {
+                IsNew= true,
+                Text = Localizer["Notification"],
+                Url = "notifications"
             },
             new()
             {

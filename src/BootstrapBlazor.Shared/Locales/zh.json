@@ -419,7 +419,8 @@
     "ChartDoughnutText": "圆环图",
     "ChartBubbleText": "气泡图",
     "DispatchText": "消息分发 Dispatch",
-    "GeolocationText": "地理定位组件 Geolocation"
+    "GeolocationText": "地理定位组件 Geolocation",
+    "NotificationsText": "浏览器通知 Notification"
   },
   "BootstrapBlazor.Shared.Samples.GlobalException": {
     "Title": "全局异常",
@@ -2697,7 +2698,8 @@
     "ChartDoughnut": "圆环图",
     "ChartBubble": "气泡图",
     "Transition": "过渡效果 Transition",
-    "Geolocation": "地理定位组件 Geolocation"
+    "Geolocation": "地理定位组件 Geolocation",
+    "Notification": "浏览器通知 Notification"
   },
   "BootstrapBlazor.Shared.Samples.Table.TablesFooter": {
     "Left": "左对齐",
@@ -2788,5 +2790,28 @@
     "LastUpdateTime": "时间戳",
     "CurrentDistance": "移动距离",
     "TotalDistance": "总移动距离"
+  },
+  "BootstrapBlazor.Shared.Samples.Notifications": {
+    "Title": "通知",
+    "BaseUsageText": "基础用法",
+    "IntroText1": "通过浏览器API发送通知信息。",
+    "IntroText2": "单击按钮以发送通知。",
+    "IntroText3": "注意: 出于安全考虑，当网页请求发送通知时，用户会被提示进行授权。",
+    "NotificationButtonText": "显示通知",
+    "NotificationSilentButtonText": "显示静默通知",
+    "CheckPermissionText": "检查权限",
+    "PermissionText": "允许通知",
+    "SilentText": "静默",
+    "TitleText": "标题",
+    "MessageText": "信息",
+    "IconText": "图标",
+    "SoundText": "通知触发时要播放的音频文件的URL",
+    "CheckPermissionResultSuccess": "获取权限成功",
+    "CheckPermissionResultFailed": "获取权限失败",
+    "NotificationResultSuccess": "调用通知成功",
+    "NotificationResultFailed": "调用通知失败",
+    "BasicUsageTips": "使用注入服务 <code>NotificationService</code> 调用 <code>DisplayNotification</code> 方法",
+    "OnClickText": "通知点击后的回调"
+
   }
 }
