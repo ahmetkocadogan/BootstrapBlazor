@@ -2,15 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // Website: https://www.blazor.zone or https://argozhang.github.io/
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace UnitTest.Components;
 
-public class SwalTest : BootstrapBlazorTestBase
+public class SwalTest : SwalTestBase
 {
     [Fact]
     public void Show_Ok()
@@ -22,7 +16,7 @@ public class SwalTest : BootstrapBlazorTestBase
 
         var swal = cut.FindComponent<MockSwalTest>().Instance.SwalService;
 
-        cut.InvokeAsync(() => swal.Show(new SwalOption()
+        cut.InvokeAsync(async () => await swal.Show(new SwalOption()
         {
             BodyTemplate = builder => builder.AddContent(0, "Test-BodyTemplate"),
             FooterTemplate = builder => builder.AddContent(0, "Test-FooterTemplate"),
@@ -34,8 +28,6 @@ public class SwalTest : BootstrapBlazorTestBase
         Assert.Contains("Test-BodyTemplate", cut.Markup);
         Assert.Contains("Test-FooterTemplate", cut.Markup);
         Assert.Contains("Test-ButtonTemplate", cut.Markup);
-
-        var aa = cut.Markup;
 
         // 测试关闭逻辑
         var modal = cut.FindComponent<Modal>();
@@ -121,7 +113,32 @@ public class SwalTest : BootstrapBlazorTestBase
         var confirmbutton = cut.Find(".btn-danger");
         confirmbutton.Click();
         Assert.True(confirm);
+
+        cut.SetParametersAndRender(pb =>
+        {
+            pb.AddChildContent<Select<string>>(pb =>
+            {
+                pb.Add(a => a.OnBeforeSelectedItemChange, item => Task.FromResult(true));
+                pb.Add(a => a.SwalFooter, "Test-Swal-Footer");
+                pb.Add(a => a.SwalCategory, SwalCategory.Question);
+                pb.Add(a => a.SwalTitle, "Test-Swal-Title");
+                pb.Add(a => a.SwalContent, "Test-Swal-Content");
+                pb.Add(a => a.Items, new SelectedItem[]
+                {
+                    new SelectedItem("1", "Test1"),
+                    new SelectedItem("2", "Test2")
+                });
+            });
+        });
+        cut.InvokeAsync(() => cut.Find(".dropdown-item").Click());
+        Assert.Contains("Test-Swal-Title", cut.Markup);
+        Assert.Contains("Test-Swal-Content", cut.Markup);
+        Assert.Contains("Test-Swal-Footer", cut.Markup);
+
+        cut.InvokeAsync(() => cut.Find(".swal2-actions button").Click());
+        Assert.DoesNotContain("Test-Swal-Content", cut.Markup);
     }
+
 
     private class MockSwalTest : ComponentBase
     {
@@ -130,5 +147,3 @@ public class SwalTest : BootstrapBlazorTestBase
         public SwalService? SwalService { get; set; }
     }
 }
-
-
