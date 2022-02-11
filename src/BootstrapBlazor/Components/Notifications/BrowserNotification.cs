@@ -13,25 +13,25 @@ public static class BrowserNotification
     /// 检查浏览器通知权限状态
     /// </summary>
     /// <typeparam name="TComponent"></typeparam>
-    /// <param name="interop"></param>
-    /// <param name="component"></param>
+    /// <param name="interop">JSInterop 实例</param>
+    /// <param name="component">当前页面</param>
     /// <param name="callbackMethodName">检查通知权限结果回调方法</param>
-    /// <param name="requestPermission"></param>
+    /// <param name="requestPermission">是否请求权限 默认 true</param>
     /// <returns></returns>
-    public static ValueTask<bool> CheckPermission<TComponent>(JSInterop<TComponent> interop, TComponent component, string callbackMethodName, bool requestPermission = true) where TComponent : class => interop.CheckNotifyPermissionAsync(component, callbackMethodName, requestPermission);
+    public static ValueTask CheckPermission<TComponent>(JSInterop<TComponent> interop, TComponent component, string? callbackMethodName = null, bool requestPermission = true) where TComponent : class => interop.CheckNotifyPermissionAsync(component, callbackMethodName, requestPermission);
 
     /// <summary>
     /// 发送浏览器通知
     /// </summary>
     /// <typeparam name="TComponent"></typeparam>
-    /// <param name="interop"></param>
-    /// <param name="component"></param>
+    /// <param name="interop">JSInterop 实例</param>
+    /// <param name="component">当前页面</param>
+    /// <param name="model">NotificationItem 实例</param>
     /// <param name="callbackMethodName">发送结果回调方法</param>
-    /// <param name="model"></param>
     /// <returns></returns>
-    public static async Task<bool> Dispatch<TComponent>(JSInterop<TComponent> interop, TComponent component, string callbackMethodName, NotificationItem model) where TComponent : class
+    public static async Task<bool> Dispatch<TComponent>(JSInterop<TComponent> interop, TComponent component, NotificationItem model, string? callbackMethodName) where TComponent : class
     {
-        var ret = await interop.DisplayNotification(component, callbackMethodName, model);
+        var ret = await interop.Dispatch(component, model, callbackMethodName);
         return ret;
     }
 }

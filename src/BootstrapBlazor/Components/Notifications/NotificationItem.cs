@@ -37,5 +37,5 @@ public class NotificationItem
     /// <summary>
     /// 获得/设置 通知点击后的回调
     /// </summary>
-    public string OnClick { get; set; }
+    public string? OnClick { get; set; }
 }

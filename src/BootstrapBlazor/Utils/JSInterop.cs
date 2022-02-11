@@ -75,18 +75,17 @@ public class JSInterop<TValue> : IDisposable where TValue : class
     /// 
     /// </summary>
     /// <returns></returns>
-    internal ValueTask<bool> CheckNotifyPermissionAsync(TValue value, string callbackMethodName, bool requestPermission = true)
+    internal ValueTask CheckNotifyPermissionAsync(TValue value, string? callbackMethodName = null, bool requestPermission = true)
     {
         _objRef = DotNetObjectReference.Create(value);
-        return _jsRuntime.InvokeAsync<bool>("$.bb_notify_checkPermission", _objRef, callbackMethodName, requestPermission);
+        return _jsRuntime.InvokeVoidAsync("$.bb_notify_checkPermission", _objRef, callbackMethodName ?? "", requestPermission);
     }
-
 
     /// <summary>
     /// 
     /// </summary>
     /// <returns></returns>
-    internal ValueTask<bool> DisplayNotification(TValue value, string callbackMethodName, NotificationItem model)
+    internal ValueTask<bool> Dispatch(TValue value, NotificationItem model, string? callbackMethodName = null)
     {
         _objRef = DotNetObjectReference.Create(value);
         return _jsRuntime.InvokeAsync<bool>("$.bb_notify_display", _objRef, callbackMethodName, model);
