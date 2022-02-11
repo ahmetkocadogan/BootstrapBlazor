@@ -37,7 +37,7 @@ public class NotificationItem
     public string Sound { get; set; }
 
     /// <summary>
-    /// 获得/设置 通知点击后的回调 (未完工)
+    /// 获得/设置 通知点击后的回调
     /// </summary>
     public string OnClick { get; set; }
 
