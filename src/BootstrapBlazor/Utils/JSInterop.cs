@@ -86,10 +86,10 @@ public class JSInterop<TValue> : IDisposable where TValue : class
     /// 
     /// </summary>
     /// <returns></returns>
-    internal ValueTask<bool> DisplayNotification(TValue value, string callbackMethodName, NotificationItem model,string? onclickCallbackMethodName = null)
+    internal ValueTask<bool> DisplayNotification(TValue value, string callbackMethodName, NotificationItem model)
     {
         _objRef = DotNetObjectReference.Create(value);
-        return _jsRuntime.InvokeAsync<bool>("$.bb_notify_display", _objRef, callbackMethodName, model, onclickCallbackMethodName);
+        return _jsRuntime.InvokeAsync<bool>("$.bb_notify_display", _objRef, callbackMethodName, model);
     }
 
     /// <summary>

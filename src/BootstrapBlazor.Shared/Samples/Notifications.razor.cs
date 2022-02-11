@@ -31,7 +31,7 @@ public partial class Notifications : IDisposable
 
     [Inject]
     [NotNull]
-    private NotificationService? NotificationService { get; set; }
+    private BrowserNotification? NotificationService { get; set; }
 
     private bool permission { get; set; }
     private NotificationItem Model { get; set; } = new NotificationItem();
@@ -58,7 +58,7 @@ public partial class Notifications : IDisposable
         if (firstRender)
         {
             Interop = new JSInterop<Notifications>(JSRuntime);
-            var ret = await NotificationService.CheckPermission(Interop, this, nameof(GetPermissionCallback), false);
+            var ret = await BrowserNotification.CheckPermission(Interop, this, nameof(GetPermissionCallback), false);
             Trace.Log(ret ? Localizer["CheckPermissionResultSuccess"] : Localizer["CheckPermissionResultFailed"]);
         }
     }
@@ -66,14 +66,14 @@ public partial class Notifications : IDisposable
     private async Task CheckPermission()
     {
         Interop ??= new JSInterop<Notifications>(JSRuntime);
-        var ret = await NotificationService.CheckPermission(Interop, this, nameof(GetPermissionCallback));
+        var ret = await BrowserNotification.CheckPermission(Interop, this, nameof(GetPermissionCallback));
         Trace.Log(ret ? Localizer["CheckPermissionResultSuccess"] : Localizer["CheckPermissionResultFailed"]);
     }
 
     private async Task DisplayNotification()
     {
         Interop ??= new JSInterop<Notifications>(JSRuntime);
-        var ret = await NotificationService.DisplayNotification(Interop, this, nameof(ShowNotificationCallback), Model);
+        var ret = await BrowserNotification.Dispatch(Interop, this, nameof(ShowNotificationCallback), Model);
         Trace.Log(ret ? Localizer["NotificationResultSuccess"] : Localizer["NotificationResultFailed"]);
     }
 
@@ -194,7 +194,7 @@ public partial class Notifications : IDisposable
         },
         new()
         {
-            Name ="NotificationService." + nameof(NotificationService.DisplayNotification),
+            Name ="NotificationService." + nameof(NotificationService.Dispatch),
             Description = Localizer["NotificationButtonText"],
             Parameters = "JSRuntime实例,TComponent,发送结果回调方法,NotificationItem实例",
             ReturnValue = "object"
