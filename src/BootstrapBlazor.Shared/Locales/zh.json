@@ -2811,7 +2811,8 @@
     "NotificationResultSuccess": "调用通知成功",
     "NotificationResultFailed": "调用通知失败",
     "BasicUsageTips": "使用注入服务 <code>NotificationService</code> 调用 <code>DisplayNotification</code> 方法",
-    "OnClickText": "通知点击后的回调"
-
+    "OnClickText": "通知点击后的回调",
+    "TitleSampleText": "你有新的物流通知",
+    "MessageSampleText": "您的包裹已到达亮马河南路,距离分发只剩3站."
   }
 }

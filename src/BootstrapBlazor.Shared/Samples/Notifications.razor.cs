@@ -33,7 +33,6 @@ public partial class Notifications : IDisposable
     [NotNull]
     private NotificationService? NotificationService { get; set; }
 
-    private string result { get; set; }
     private bool permission { get; set; }
     private NotificationItem Model { get; set; } = new NotificationItem();
 
@@ -43,10 +42,10 @@ public partial class Notifications : IDisposable
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Model.Title ??= "你有新的物流通知";
-        Model.Message ??= "您的包裹已到达亮马河南路,距离分发只剩3站.";
+        Model.Title ??= Localizer["TitleSampleText"];
+        Model.Message ??= Localizer["MessageSampleText"];
         Model.Icon ??= "_content/BootstrapBlazor.Shared/images/Argo-C.png";
-        //Model.OnClick ??= nameof(OnClickNotificationCallback);
+        Model.OnClick ??= nameof(OnClickNotificationCallback);
     }
 
     /// <summary>
@@ -97,7 +96,7 @@ public partial class Notifications : IDisposable
     [JSInvokable]
     public void ShowNotificationCallback(string result)
     {
-        this.result = result;
+        this.permission = result == "true";
         Trace.Log("ShowNotificationCallback " + result);
         StateHasChanged();
     }
@@ -109,7 +108,6 @@ public partial class Notifications : IDisposable
     [JSInvokable]
     public void OnClickNotificationCallback(string result)
     {
-        this.result = result;
         Trace.Log("OnClickNotificationCallback " + result);
         StateHasChanged();
     }
