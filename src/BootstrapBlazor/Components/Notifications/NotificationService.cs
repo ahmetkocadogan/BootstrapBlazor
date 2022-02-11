@@ -36,7 +36,7 @@ public class NotificationService
     /// <returns></returns>
     public async Task<bool> DisplayNotification<TComponent>(JSInterop<TComponent> interop, TComponent component, string callbackMethodName, NotificationItem model) where TComponent : class
     {
-        var ret = await interop.DisplayNotification(component, callbackMethodName, model);
+        var ret = await interop.DisplayNotification(component, callbackMethodName, model, model.OnClick);
         return ret;
     }
 }

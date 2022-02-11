@@ -2803,7 +2803,9 @@
     "NotificationResultSuccess": "Call Notification success",
     "NotificationResultFailed": "Call Notification failed",
     "BasicUsageTips": "Uses the injection service <code>NotificationService</code> to call the <code>DisplayNotification</code> method.",
-    "OnClickText": "Click Notification callback methods",
+    "ShowNotificationCallbackText": "Show notification callback ",
+    "GetPermissionCallbackText": "Get permission callback ",
+    "OnClickText": "Click notification callback ",
     "TitleSampleText": "You have a new logistics notification",
     "MessageSampleText": "Your package has arrived on Panama South Road, and there are only 3 stops left for distribution."
 

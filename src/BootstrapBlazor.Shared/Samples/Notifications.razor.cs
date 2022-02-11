@@ -85,7 +85,7 @@ public partial class Notifications : IDisposable
     public void GetPermissionCallback(string result)
     {
         this.permission = result == "true";
-        Trace.Log("GetPermissionCallback " + (this.permission ? "OK": "No permission"));
+        Trace.Log(Localizer["GetPermissionCallbackText"] + (this.permission ? "OK": "No permission"));
         StateHasChanged();
     }
 
@@ -97,7 +97,7 @@ public partial class Notifications : IDisposable
     public void ShowNotificationCallback(string result)
     {
         this.permission = result == "true";
-        Trace.Log("ShowNotificationCallback " + result);
+        Trace.Log(Localizer["ShowNotificationCallbackText"] + result);
         StateHasChanged();
     }
 
@@ -108,7 +108,7 @@ public partial class Notifications : IDisposable
     [JSInvokable]
     public void OnClickNotificationCallback(string result)
     {
-        Trace.Log("OnClickNotificationCallback " + result);
+        Trace.Log(Localizer["OnClickText"] + result);
         StateHasChanged();
     }
 
@@ -196,7 +196,7 @@ public partial class Notifications : IDisposable
         {
             Name ="NotificationService." + nameof(NotificationService.DisplayNotification),
             Description = Localizer["NotificationButtonText"],
-            Parameters = "JSRuntime实例,TComponent,发送结果回调方法",
+            Parameters = "JSRuntime实例,TComponent,发送结果回调方法,NotificationItem实例",
             ReturnValue = "object"
         }, 
     };
