@@ -29,11 +29,8 @@ public partial class Notifications : IDisposable
     [NotNull]
     private IJSRuntime? JSRuntime { get; set; }
 
-    [Inject]
-    [NotNull]
-    private BrowserNotification? NotificationService { get; set; }
+    private bool Permission { get; set; }
 
-    private bool permission { get; set; }
     private NotificationItem Model { get; set; } = new NotificationItem();
 
     /// <summary>
@@ -58,23 +55,20 @@ public partial class Notifications : IDisposable
         if (firstRender)
         {
             Interop = new JSInterop<Notifications>(JSRuntime);
-            var ret = await BrowserNotification.CheckPermission(Interop, this, nameof(GetPermissionCallback), false);
-            Trace.Log(ret ? Localizer["CheckPermissionResultSuccess"] : Localizer["CheckPermissionResultFailed"]);
+            await BrowserNotification.CheckPermission(Interop, this, nameof(GetPermissionCallback), false);
         }
     }
 
     private async Task CheckPermission()
     {
         Interop ??= new JSInterop<Notifications>(JSRuntime);
-        var ret = await BrowserNotification.CheckPermission(Interop, this, nameof(GetPermissionCallback));
-        Trace.Log(ret ? Localizer["CheckPermissionResultSuccess"] : Localizer["CheckPermissionResultFailed"]);
+        await BrowserNotification.CheckPermission(Interop, this, nameof(GetPermissionCallback));
     }
 
-    private async Task DisplayNotification()
+    private async Task Dispatch()
     {
         Interop ??= new JSInterop<Notifications>(JSRuntime);
-        var ret = await BrowserNotification.Dispatch(Interop, this, nameof(ShowNotificationCallback), Model);
-        Trace.Log(ret ? Localizer["NotificationResultSuccess"] : Localizer["NotificationResultFailed"]);
+        await BrowserNotification.Dispatch(Interop, this, Model, nameof(ShowNotificationCallback));
     }
 
     /// <summary>
@@ -82,10 +76,10 @@ public partial class Notifications : IDisposable
     /// </summary>
     /// <param name="result"></param>
     [JSInvokable]
-    public void GetPermissionCallback(string result)
+    public void GetPermissionCallback(bool result)
     {
-        this.permission = result == "true";
-        Trace.Log(Localizer["GetPermissionCallbackText"] + (this.permission ? "OK": "No permission"));
+        Permission = result;
+        Trace.Log(Localizer["GetPermissionCallbackText"] + (result ? "OK" : "No permission"));
         StateHasChanged();
     }
 
@@ -94,21 +88,19 @@ public partial class Notifications : IDisposable
     /// </summary>
     /// <param name="result"></param>
     [JSInvokable]
-    public void ShowNotificationCallback(string result)
+    public void ShowNotificationCallback(bool result)
     {
-        this.permission = result == "true";
-        Trace.Log(Localizer["ShowNotificationCallbackText"] + result);
+        Trace.Log($"{Localizer["ShowNotificationCallbackText"]}: {result}");
         StateHasChanged();
     }
 
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="result"></param>
     [JSInvokable]
-    public void OnClickNotificationCallback(string result)
+    public void OnClickNotificationCallback()
     {
-        Trace.Log(Localizer["OnClickText"] + result);
+        Trace.Log($"{Localizer["OnClickText"]}");
         StateHasChanged();
     }
 
@@ -139,66 +131,52 @@ public partial class Notifications : IDisposable
 
     private IEnumerable<AttributeItem> GetNotificationItem() => new AttributeItem[]
     {
-        new() {
+        new()
+        {
             Name = "Title",
             Description = Localizer["TitleText"],
             Type = "string",
-            ValueList = "-",
-            DefaultValue = ""
+            ValueList = " — ",
+            DefaultValue = " — "
         },
-        new() {
+        new()
+        {
             Name = "Message",
             Description = Localizer["MessageText"],
             Type = "string",
-            ValueList = "-",
-            DefaultValue = ""
+            ValueList = " — ",
+            DefaultValue = " — "
         },
         new() {
             Name = "Icon",
             Description = Localizer["IconText"],
             Type = "string",
-            ValueList = "-",
-            DefaultValue = ""
+            ValueList = " — ",
+            DefaultValue = " — "
         },
-        new() {
+        new()
+        {
             Name = "Silent",
             Description = Localizer["SilentText"],
             Type = "bool",
-            ValueList = "-",
-            DefaultValue = ""
+            ValueList = " — ",
+            DefaultValue = " — "
         },
-        new() {
+        new()
+        {
             Name = "Sound",
             Description = Localizer["SoundText"],
             Type = "string",
-            ValueList = "-",
-            DefaultValue = ""
+            ValueList = " — ",
+            DefaultValue = " — "
         },
-        new() {
+        new()
+        {
             Name = "OnClick",
             Description = Localizer["OnClickText"],
             Type = "Methods",
-            ValueList = "-",
-            DefaultValue = ""
+            ValueList = " — ",
+            DefaultValue = " — "
         },
     };
-
-    private IEnumerable<MethodItem> GetMethods() => new MethodItem[]
-    {
-        new()
-        {
-            Name ="NotificationService." + nameof(NotificationService.CheckPermission),
-            Description = Localizer["CheckPermissionText"],
-            Parameters = "JSRuntime实例,TComponent,检查通知权限结果回调方法,是否弹出获取权限窗口",
-            ReturnValue = "bool"
-        },
-        new()
-        {
-            Name ="NotificationService." + nameof(NotificationService.Dispatch),
-            Description = Localizer["NotificationButtonText"],
-            Parameters = "JSRuntime实例,TComponent,发送结果回调方法,NotificationItem实例",
-            ReturnValue = "object"
-        }, 
-    };
-
 }
