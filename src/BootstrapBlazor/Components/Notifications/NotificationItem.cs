@@ -12,19 +12,17 @@ public class NotificationItem
     /// <summary>
     /// 获得/设置 标题
     /// </summary>
-    /// <returns></returns>
-    public string Title { get; set; }
+    public string? Title { get; set; }
 
     /// <summary>
     /// 获得/设置 信息
     /// </summary>
-    /// <returns></returns>
-    public string Message { get; set; }
+    public string? Message { get; set; }
 
     /// <summary>
     /// 获得/设置 图标
     /// </summary>
-    public string Icon { get; set; }
+    public string? Icon { get; set; }
 
     /// <summary>
     /// 获得/设置 静默
@@ -32,14 +30,12 @@ public class NotificationItem
     public bool Silent { get; set; }
 
     /// <summary>
-    /// 获得/设置 通知触发时要播放的音频文件的URL
+    /// 获得/设置 通知触发时要播放的音频文件的 URL
     /// </summary>
-    public string Sound { get; set; }
+    public string? Sound { get; set; }
 
     /// <summary>
     /// 获得/设置 通知点击后的回调
     /// </summary>
     public string OnClick { get; set; }
-
-
 }
