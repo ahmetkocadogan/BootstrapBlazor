@@ -26,12 +26,16 @@ public class DialogTest : BootstrapBlazorTestBase
             HeaderTemplate = builder => builder.AddContent(0, "Test-HeaderTemplate"),
             FooterTemplate = builder => builder.AddContent(0, "Test-FooterTemplate"),
             Class = "test-class",
+            ShowMaximizeButton = true,
             OnCloseAsync = () =>
             {
                 closed = true;
                 return Task.CompletedTask;
             }
         }));
+
+        // 全屏按钮
+        Assert.Contains("btn-maximize", cut.Markup);
 
         // 代码覆盖模板单元测试
         Assert.Contains("Test-BodyTemplate", cut.Markup);
