@@ -22,7 +22,7 @@ public partial class ModalDialog : IDisposable
     /// 获得 弹窗组件样式
     /// </summary>
     private string? ClassName => CssBuilder.Default("modal-dialog")
-        .AddClass("modal-dialog-centered", IsCentered && !IsDraggable)
+        .AddClass("modal-dialog-centered", IsCentered)
         .AddClass($"modal-{Size.ToDescriptionString()}", Size != Size.None)
         .AddClass($"modal-{FullScreenSize.ToDescriptionString()}", FullScreenSize != FullScreenSize.None && !MaximizeStatus)
         .AddClass("modal-dialog-scrollable", IsScrolling)
