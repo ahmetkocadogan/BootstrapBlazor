@@ -16,19 +16,24 @@
                     var status = $button.attr('aria-label');
                     if (status === "maximize") {
                         $el.css({
-                            "marginTop": "calc(100vh - 50%)"
+                            "marginLeft": "auto",
+                            "width": $el.width(),
                         });
                     }
                     else {
-                        $el.css({});
+                        var handler = window.setInterval(function () {
+                            if ($el.attr('style')) {
+                                $el.removeAttr('style');
+                            }
+                            else {
+                                window.clearInterval(handler);
+                            }
+                        }, 100);
                     }
                 });
-                if ($el.hasClass('modal-dialog-centered')) {
-                    $el.css({
-                        "marginTop": "calc(100vh - 50%)"
-                    });
-                    $el.removeClass("modal-dialog-centered");
-                }
+                $el.css({
+                    "marginLeft": "auto"
+                });
                 $el.find('.modal-header').drag(
                     function (e) {
                         originX = e.clientX || e.touches[0].clientX;
