@@ -11,6 +11,18 @@
             var dialogHeight = 0;
             var pt = { top: 0, left: 0 };
             if ($el.hasClass('is-draggable')) {
+                $el.find('.btn-maximize').click(function () {
+                    $button = $(this);
+                    var status = $button.attr('aria-label');
+                    if (status === "maximize") {
+                        $el.css({
+                            "marginTop": "calc(100vh - 50%)"
+                        });
+                    }
+                    else {
+                        $el.css({});
+                    }
+                });
                 if ($el.hasClass('modal-dialog-centered')) {
                     $el.css({
                         "marginTop": "calc(100vh - 50%)"
