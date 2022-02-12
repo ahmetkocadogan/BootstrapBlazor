@@ -24,9 +24,7 @@
                         pt.top = parseInt($el.css('marginTop').replace("px", ""));
                         pt.left = parseInt($el.css('marginLeft').replace("px", ""));
 
-                        // 移除 Center 样式
                         $el.css({ "marginLeft": pt.left, "marginTop": pt.top });
-                        $el.removeClass('modal-dialog-centered');
 
                         // 固定大小
                         $el.css("width", dialogWidth);
