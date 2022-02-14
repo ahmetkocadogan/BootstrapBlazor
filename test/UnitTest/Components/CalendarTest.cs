@@ -23,7 +23,7 @@ public class CalendarTest : BootstrapBlazorTestBase
     public void Normal_Ok()
     {
         var cut = Context.RenderComponent<Calendar>();
-        Assert.Contains("2022", cut.Markup);
+        Assert.Contains(DateTime.Now.Year.ToString(), cut.Markup);
     }
 
     [Fact]
@@ -57,10 +57,24 @@ public class CalendarTest : BootstrapBlazorTestBase
     public void ButtonClick_Ok()
     {
         var cut = Context.RenderComponent<Calendar>();
+        var buttons = cut.FindAll("button");
 
         //btn上一年
-        cut.Find("button").Click();
+        buttons.FirstOrDefault(s => s.TextContent == "上一年").Click();
         Assert.Contains((DateTime.Now.Year-1).ToString(), cut.Markup);
+
+        //btn下一年,测了上一个按钮,这里结果将会是今年
+        buttons.FirstOrDefault(s => s.TextContent == "下一年").Click();
+        Assert.Contains((DateTime.Now.Year).ToString(), cut.Markup);
+
+        //btn上一月
+        buttons.FirstOrDefault(s => s.TextContent == "上一月").Click();
+        Assert.Contains((DateTime.Now.Month - 1).ToString(), cut.Markup);
+
+        //btn下一月,同理
+        buttons.FirstOrDefault(s => s.TextContent == "下一月").Click();
+        Assert.Contains((DateTime.Now.Month).ToString(), cut.Markup);
+
     }
 
 
