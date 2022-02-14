@@ -13,7 +13,6 @@ public class TimelineTest : BootstrapBlazorTestBase
         {
             builder.Add(x => x.IsLeft, true);
         });
-
         Assert.Contains("is-left", cut.Markup);
 
         cut.SetParametersAndRender(builder =>
@@ -21,7 +20,7 @@ public class TimelineTest : BootstrapBlazorTestBase
             builder.Add(x => x.IsLeft, false);
             builder.Add(x => x.IsAlternate, true);
         });
-
+        Assert.DoesNotContain("is-left", cut.Markup);
         Assert.Contains("is-alternate", cut.Markup);
     }
 
@@ -36,16 +35,24 @@ public class TimelineTest : BootstrapBlazorTestBase
             },
             new TimelineItem()
             {
+                Color = Color.None, Content = "no color item", Description = "first description", Icon = "fa fa-home"
+            },
+            new TimelineItem()
+            {
                 Color = Color.Dark, Component = BootstrapDynamicComponent.CreateComponent<Card>()
             }
         };
 
-        var cut = Context.RenderComponent<Timeline>(builder =>
-        {
-            builder.Add(x => x.Items, items);
-            builder.Add(x => x.IsReverse, true);
-        });
+        var cut = Context.RenderComponent<Timeline>();
 
+        // Null Items
+        Assert.Contains("timeline", cut.Markup);
+
+        cut.SetParametersAndRender(pb =>
+        {
+            pb.Add(x => x.Items, items);
+            pb.Add(x => x.IsReverse, true);
+        });
         var html = cut.Markup;
         Assert.Contains("first item", html);
         Assert.Contains("first description", html);
