@@ -244,13 +244,13 @@ public class DateTimePickerTest : BootstrapBlazorTestBase
     public void OnConfirm_Ok()
     {
         var res = false;
-        var res1 = false;
+        var value = false;
         var cut = Context.RenderComponent<TimePickerBody>(builder =>
         {
             builder.Add(a => a.Value, TimeSpan.FromDays(1));
             builder.Add(a => a.ValueChanged, EventCallback.Factory.Create<TimeSpan>(this, t =>
             {
-                res1 = true;
+                value = true;
             }));
             builder.Add(a => a.OnConfirm, new Action(() =>
             {
@@ -261,7 +261,7 @@ public class DateTimePickerTest : BootstrapBlazorTestBase
         cut.Find(".time-panel-footer .confirm").Click();
 
         Assert.True(res);
-        Assert.True(res1);
+        Assert.True(value);
     }
     #endregion
 }
