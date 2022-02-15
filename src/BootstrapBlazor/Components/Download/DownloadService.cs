@@ -95,7 +95,7 @@ public class DownloadService
         else
         {
 
-            throw new FileNotFoundException($"Can't be not found {physicalPath}");
+            throw new FileNotFoundException($"Couldn't be not found {physicalPath}");
         }
     }
 
@@ -136,19 +136,19 @@ public class DownloadService
     /// 下载文件夹方法
     /// </summary>
     /// <param name="downloadFileName">文件名</param>
-    /// <param name="directory">文件夹路径</param>
+    /// <param name="folder">文件夹路径</param>
     /// <param name="mime"></param>
     /// <returns></returns>
-    public async Task DownloadDirectoryAsync(string downloadFileName, string directory, string mime = "application/octet-stream")
+    public async Task DownloadFolderAsync(string downloadFileName, string folder, string mime = "application/octet-stream")
     {
-        if (Directory.Exists(directory))
+        if (Directory.Exists(folder))
         {
             // 打包文件
-            var directoryName = directory.TrimEnd('\\', '\r', '\n');
+            var directoryName = folder.TrimEnd('\\', '\r', '\n');
             var destZipFile = $"{directoryName}.zip";
-            ZipFile.CreateFromDirectory(directory, destZipFile);
+            ZipFile.CreateFromDirectory(folder, destZipFile);
 
-            using var stream = new FileStream(destZipFile, System.IO.FileMode.Open);
+            using var stream = new FileStream(destZipFile, FileMode.Open);
             var bytes = new byte[stream.Length];
             stream.Read(bytes, 0, bytes.Length);
             stream.Seek(0, SeekOrigin.Begin);
@@ -157,7 +157,7 @@ public class DownloadService
         else
         {
 
-            throw new DirectoryNotFoundException($"Can't be not found {directory}");
+            throw new DirectoryNotFoundException($"Couldn't be not found {folder}");
         }
     }
 
