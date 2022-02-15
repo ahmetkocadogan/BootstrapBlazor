@@ -138,24 +138,21 @@ public class DownloadService
     /// <returns></returns>
     public async Task DownloadFolderAsync(string downloadFileName, string folder, string mime = "application/octet-stream")
     {
-        if (Directory.Exists(folder))
+        if (!Directory.Exists(folder))
         {
-            // 打包文件
-            var directoryName = folder.TrimEnd('\\', '\r', '\n');
-            var destZipFile = $"{directoryName}.zip";
-            ZipFile.CreateFromDirectory(folder, destZipFile);
-
-            using var stream = new FileStream(destZipFile, FileMode.Open);
-            var bytes = new byte[stream.Length];
-            stream.Read(bytes, 0, bytes.Length);
-            stream.Seek(0, SeekOrigin.Begin);
-            await DownloadAsync(new DownloadOption() { FileName = downloadFileName, FileContent = bytes, Mime = mime });
-        }
-        else
-        {
-
             throw new DirectoryNotFoundException($"Couldn't be not found {folder}");
         }
+
+        // 打包文件
+        var directoryName = folder.TrimEnd('\\', '\r', '\n');
+        var destZipFile = $"{directoryName}.zip";
+        ZipFile.CreateFromDirectory(folder, destZipFile);
+
+        using var stream = new FileStream(destZipFile, FileMode.Open);
+        var bytes = new byte[stream.Length];
+        stream.Read(bytes, 0, bytes.Length);
+        stream.Seek(0, SeekOrigin.Begin);
+        await DownloadAsync(new DownloadOption() { FileName = downloadFileName, FileContent = bytes, Mime = mime });
     }
 
     /// <summary>
