@@ -220,4 +220,48 @@ public class DateTimePickerTest : BootstrapBlazorTestBase
         Assert.NotNull(ele);
     }
     #endregion
+
+    #region TimePicker
+    [Fact]
+    public void OnClose_Ok()
+    {
+        var res = false;
+        var cut = Context.RenderComponent<TimePickerBody>(builder =>
+        {
+            builder.Add(a => a.Value, TimeSpan.FromDays(1));
+            builder.Add(a => a.OnClose, new Action(() =>
+            {
+                res = true;
+            }));
+        });
+
+        cut.Find(".time-panel-footer .cancel").Click();
+
+        Assert.True(res);
+    }
+
+    [Fact]
+    public void OnConfirm_Ok()
+    {
+        var res = false;
+        var res1 = false;
+        var cut = Context.RenderComponent<TimePickerBody>(builder =>
+        {
+            builder.Add(a => a.Value, TimeSpan.FromDays(1));
+            builder.Add(a => a.ValueChanged, EventCallback.Factory.Create<TimeSpan>(this, t =>
+            {
+                res1 = true;
+            }));
+            builder.Add(a => a.OnConfirm, new Action(() =>
+            {
+                res = true;
+            }));
+        });
+
+        cut.Find(".time-panel-footer .confirm").Click();
+
+        Assert.True(res);
+        Assert.True(res1);
+    }
+    #endregion
 }
