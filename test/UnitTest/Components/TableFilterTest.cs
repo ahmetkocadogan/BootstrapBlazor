@@ -11,6 +11,77 @@ namespace UnitTest.Components;
 
 public class TableFilterTest : BootstrapBlazorTestBase
 {
+    private IStringLocalizer<Foo> Localizer { get; }
+
+    public TableFilterTest()
+    {
+        Localizer = Context.Services.GetRequiredService<IStringLocalizer<Foo>>();
+    }
+
+    [Fact]
+    public void TableFilter_Ok()
+    {
+        var cut = Context.RenderComponent<BootstrapBlazorRoot>(pb =>
+        {
+            pb.AddChildContent<Table<Foo>>(pb =>
+            {
+                pb.Add(a => a.Items, Foo.GenerateFoo(Localizer));
+                pb.Add(a => a.RenderMode, TableRenderMode.Table);
+                pb.Add(a => a.ShowFilterHeader, true);
+                pb.Add(a => a.TableColumns, CreateTableColumns());
+            });
+        });
+
+        var table = cut.FindComponent<Table<Foo>>();
+        table.SetParametersAndRender(pb =>
+        {
+            pb.Add(a => a.ShowFilterHeader, false);
+        });
+
+        // IsShow
+        var filter = table.Find($"[data-field=\"{nameof(Foo.Name)}\"]");
+        filter.Click();
+
+        // Close
+        var filterInstance = cut.FindComponent<TableFilter>();
+        cut.InvokeAsync(() => filterInstance.Instance.Close());
+
+        // ConfirmByKey
+        filter.Click();
+        cut.InvokeAsync(() => filterInstance.Instance.ConfirmByKey());
+
+        // EscByKey
+        filter.Click();
+        cut.InvokeAsync(() => filterInstance.Instance.EscByKey());
+
+        // Reset/Confirm buttons
+        // ClickReset
+        filter.Click();
+        var buttons = filterInstance.FindAll(".is-close");
+        cut.InvokeAsync(() => buttons[0].Click());
+
+        // ClickConfirm
+        filter.Click();
+        buttons = filterInstance.FindAll(".is-close");
+        cut.InvokeAsync(() => buttons[1].Click());
+
+        // OnFilterAsync
+        filter.Click();
+        var input = filterInstance.FindComponent<BootstrapInput<string>>();
+        cut.InvokeAsync(() => input.Instance.SetValue("0001"));
+        cut.InvokeAsync(() => buttons[1].Click());
+
+        // Show more button
+        filter.Click();
+        buttons = filterInstance.FindAll("button");
+
+        // add +
+        cut.InvokeAsync(() => buttons[0].Click());
+
+        // sub -
+        cut.InvokeAsync(() => buttons[1].Click());
+    }
+
     private static RenderFragment<Foo> CreateTableColumns() => foo => builder =>
     {
         var index = 0;
