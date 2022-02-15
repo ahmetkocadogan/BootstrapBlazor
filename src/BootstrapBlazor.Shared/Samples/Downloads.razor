@@ -46,4 +46,12 @@
     <img src="@TempUrl" style="width: 120px; height: auto;" />
 </DemoBlock>
 
+<DemoBlock Title="下载文件" Introduction="通过设置物理路径直接下载文件" Name="Physical">
+    <Button IsAsync="true" Icon="fa fa-download" Text="下载" OnClickWithoutRender="DownloadPhysicalFileAsync"></Button>
+</DemoBlock>
+
+<DemoBlock Title="文件夹下载" Introduction="通过设置文件夹物理路径,将目录以及子项目压缩下载" Name="Directory">
+    <Button IsAsync="true" Icon="fa fa-download" Text="下载" OnClickWithoutRender="DownloadDirectoryAsync"></Button>
+</DemoBlock>
+
 <Download></Download>
