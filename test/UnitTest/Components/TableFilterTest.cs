@@ -82,6 +82,40 @@ public class TableFilterTest : BootstrapBlazorTestBase
         cut.InvokeAsync(() => buttons[1].Click());
     }
 
+    [Fact]
+    public void FilterTemplate_Ok()
+    {
+        var cut = Context.RenderComponent<BootstrapBlazorRoot>(pb =>
+        {
+            pb.AddChildContent<Table<Cat>>(pb =>
+            {
+                pb.Add(a => a.Items, new List<Cat>
+                {
+                    new Cat()
+                });
+                pb.Add(a => a.RenderMode, TableRenderMode.Table);
+                pb.Add(a => a.TableColumns, CreateCatTableColumns());
+            });
+        });
+    }
+
+    [Fact]
+    public void NotInTable_Ok()
+    {
+        var cut = Context.RenderComponent<TableFilter>(pb =>
+        {
+            var foo = Foo.Generate(Localizer);
+            var column = new TableColumn<Foo, string>();
+            column.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object?>()
+            {
+                ["Field"] = foo.Name,
+                ["FieldExpression"] = foo.GenerateValueExpression()
+            }));
+            pb.Add(a => a.IsHeaderRow, true);
+            pb.Add(a => a.Column, column);
+        });
+    }
+
     private static RenderFragment<Foo> CreateTableColumns() => foo => builder =>
     {
         var index = 0;
@@ -126,4 +160,72 @@ public class TableFilterTest : BootstrapBlazorTestBase
         builder.AddAttribute(index++, nameof(TableColumn<Foo, IEnumerable<string>>.Filterable), true);
         builder.CloseComponent();
     };
+
+    private static RenderFragment<Cat> CreateCatTableColumns() => cat => builder =>
+    {
+        var index = 0;
+        builder.OpenComponent<TableColumn<Cat, short>>(index++);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, short>.Field), cat.P1);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, short>.FieldExpression), Utility.GenerateValueExpression(cat, nameof(Cat.P1), typeof(short)));
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, short>.Filterable), true);
+        builder.CloseComponent();
+
+        builder.OpenComponent<TableColumn<Cat, long>>(index++);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, long>.Field), cat.P2);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, long>.FieldExpression), Utility.GenerateValueExpression(cat, nameof(Cat.P2), typeof(long)));
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, long>.Filterable), true);
+        builder.CloseComponent();
+
+        builder.OpenComponent<TableColumn<Cat, float>>(index++);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, float>.Field), cat.P3);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, float>.FieldExpression), Utility.GenerateValueExpression(cat, nameof(Cat.P3), typeof(float)));
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, float>.Filterable), true);
+        builder.CloseComponent();
+
+        builder.OpenComponent<TableColumn<Cat, double>>(index++);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, double>.Field), cat.P4);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, double>.FieldExpression), Utility.GenerateValueExpression(cat, nameof(Cat.P4), typeof(double)));
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, double>.Filterable), true);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, double>.Step), 0.02);
+        builder.CloseComponent();
+
+        builder.OpenComponent<TableColumn<Cat, decimal>>(index++);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, decimal>.Field), cat.P5);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, decimal>.FieldExpression), Utility.GenerateValueExpression(cat, nameof(Cat.P5), typeof(decimal)));
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, decimal>.Filterable), true);
+        builder.CloseComponent();
+
+        builder.OpenComponent<TableColumn<Cat, decimal>>(index++);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, decimal>.Field), cat.P6);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, decimal>.FieldExpression), Utility.GenerateValueExpression(cat, nameof(Cat.P6), typeof(decimal)));
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, decimal>.Filterable), true);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, decimal>.FilterTemplate), new RenderFragment(builder =>
+        {
+            builder.AddContent(0, "Test-FilterTemplate");
+        }));
+        builder.CloseComponent();
+
+        builder.OpenComponent<TableColumn<Cat, Foo>>(index++);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, Foo>.Field), cat.P7);
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, Foo>.FieldExpression), Utility.GenerateValueExpression(cat, nameof(Cat.P7), typeof(Foo)));
+        builder.AddAttribute(index++, nameof(TableColumn<Cat, Foo>.Filterable), true);
+        builder.CloseComponent();
+    };
+
+    private class Cat
+    {
+        public short P1 { get; set; }
+
+        public long P2 { get; set; }
+
+        public float P3 { get; set; }
+
+        public double P4 { get; set; }
+
+        public decimal P5 { get; set; }
+
+        public decimal P6 { get; set; }
+
+        public Foo? P7 { get; set; }
+    }
 }
