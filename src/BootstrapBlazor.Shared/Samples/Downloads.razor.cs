@@ -101,11 +101,11 @@ public partial class Downloads
 
     });
 
-    private Task DownloadDirectoryAsync() => Task.Run(async () =>
+    private Task DownloadFolderAsync() => Task.Run(async () =>
     {
         try
         {
-            await downloadService.DownloadDirectoryAsync("test.zip", SiteOptions.Value.WebRootPath);
+            await downloadService.DownloadFolderAsync("test.zip", SiteOptions.Value.WebRootPath);
         }
         catch (FileNotFoundException msg)
         {
