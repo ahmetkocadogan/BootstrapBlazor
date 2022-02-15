@@ -79,24 +79,21 @@ public class DownloadService
     /// 下载文件方法
     /// </summary>
     /// <param name="downloadFileName">文件名</param>
-    /// <param name="physicalPath">文件物理路径</param>
+    /// <param name="physicalFilePath">文件物理路径</param>
     /// <param name="mime"></param>
     /// <returns></returns>
-    public async Task DownloadAsync(string downloadFileName, string physicalPath, string mime = "application/octet-stream")
+    public async Task DownloadAsync(string downloadFileName, string physicalFilePath, string mime = "application/octet-stream")
     {
-        if (File.Exists(physicalPath))
+        if (!File.Exists(physicalFilePath))
         {
-            using var stream = new FileStream(physicalPath, FileMode.Open);
-            var bytes = new byte[stream.Length];
-            stream.Read(bytes, 0, bytes.Length);
-            stream.Seek(0, SeekOrigin.Begin);
-            await DownloadAsync(new DownloadOption() { FileName = downloadFileName, FileContent = bytes, Mime = mime });
+            throw new FileNotFoundException($"Couldn't be not found {physicalFilePath}", physicalFilePath);
         }
-        else
-        {
 
-            throw new FileNotFoundException($"Couldn't be not found {physicalPath}");
-        }
+        using var stream = new FileStream(physicalFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        var bytes = new byte[stream.Length];
+        stream.Read(bytes, 0, bytes.Length);
+        stream.Seek(0, SeekOrigin.Begin);
+        await DownloadAsync(new DownloadOption() { FileName = downloadFileName, FileContent = bytes, Mime = mime });
     }
 
     /// <summary>
