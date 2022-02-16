@@ -30,4 +30,33 @@ public class BoolFilterTest : BootstrapBlazorTestBase
         cut.InvokeAsync(() => condtions = filter.GetFilterConditions());
         Assert.Single(condtions);
     }
+
+    [Fact]
+    public void IsHeaderRow_OnSelectedItemChanged()
+    {
+        var cut = Context.RenderComponent<MockBoolFilter>();
+        var filter = cut.Instance;
+        var items = cut.FindAll(".dropdown-item");
+        IEnumerable<FilterKeyValueAction>? condtions = null;
+        cut.InvokeAsync(() => items[1].Click());
+        cut.InvokeAsync(() => condtions = filter.GetFilterConditions());
+        Assert.Single(condtions);
+    }
+
+    public class MockBoolFilter : BoolFilter
+    {
+        protected override void OnInitialized()
+        {
+            base.OnInitialized();
+
+            if (TableFilter == null)
+            {
+                TableFilter = new TableFilter();
+                TableFilter.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object?>
+                {
+                    [nameof(TableFilter.IsHeaderRow)] = true
+                }));
+            }
+        }
+    }
 }
