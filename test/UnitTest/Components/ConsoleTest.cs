@@ -32,7 +32,7 @@ public class ConsoleTest : BootstrapBlazorTestBase
             builder.Add(a => a.Items,
                 new List<ConsoleMessageItem>()
                 {
-                    new ConsoleMessageItem() {Message = "Test1 "}, new ConsoleMessageItem() {Message = "Test2"}
+                    new ConsoleMessageItem() {Message = "Test1"}, new ConsoleMessageItem() {Message = "Test2"}
                 });
         });
 
@@ -49,7 +49,7 @@ public class ConsoleTest : BootstrapBlazorTestBase
             builder.Add(a => a.Items,
                 new List<ConsoleMessageItem>()
                 {
-                    new ConsoleMessageItem() {Message = "Test1 "}, new ConsoleMessageItem() {Message = "Test2"}
+                    new ConsoleMessageItem() {Message = "Test1"}, new ConsoleMessageItem() {Message = "Test2"}
                 });
             builder.Add(a => a.OnClear, new Action(() =>
             {
@@ -69,8 +69,9 @@ public class ConsoleTest : BootstrapBlazorTestBase
             builder.Add(a => a.Items,
                 new List<ConsoleMessageItem>()
                 {
-                    new ConsoleMessageItem() {Message = "Test1 "}, new ConsoleMessageItem() {Message = "Test2"}
+                    new ConsoleMessageItem() {Message = "Test1"}, new ConsoleMessageItem() {Message = "Test2"}
                 });
+            builder.Add(a => a.OnClear, new Action(() => { }));
             builder.Add(a => a.ClearButtonText, "Console Clear");
         });
 
@@ -85,8 +86,9 @@ public class ConsoleTest : BootstrapBlazorTestBase
             builder.Add(a => a.Items,
                 new List<ConsoleMessageItem>()
                 {
-                    new ConsoleMessageItem() {Message = "Test1 "}, new ConsoleMessageItem() {Message = "Test2"}
+                    new ConsoleMessageItem() {Message = "Test1"}, new ConsoleMessageItem() {Message = "Test2"}
                 });
+            builder.Add(a => a.OnClear, new Action(() => { }));
             builder.Add(a => a.ClearButtonIcon, "fa fa-times");
         });
 
@@ -102,12 +104,13 @@ public class ConsoleTest : BootstrapBlazorTestBase
             builder.Add(a => a.Items,
                 new List<ConsoleMessageItem>()
                 {
-                    new ConsoleMessageItem() {Message = "Test1 "}, new ConsoleMessageItem() {Message = "Test2"}
+                    new ConsoleMessageItem() {Message = "Test1"}, new ConsoleMessageItem() {Message = "Test2"}
                 });
+            builder.Add(a => a.OnClear, new Action(() => { }));
             builder.Add(a => a.ClearButtonColor, Color.Primary);
         });
 
-        Assert.Contains(".btn-primary", cut.Markup);
+        Assert.Contains("btn-primary", cut.Markup);
     }
 
     [Fact]
@@ -118,7 +121,7 @@ public class ConsoleTest : BootstrapBlazorTestBase
             builder.Add(a => a.Items,
                 new List<ConsoleMessageItem>()
                 {
-                    new ConsoleMessageItem() {Message = "Test1 "}, new ConsoleMessageItem() {Message = "Test2"}
+                    new ConsoleMessageItem() {Message = "Test1"}, new ConsoleMessageItem() {Message = "Test2"}
                 });
             builder.Add(a => a.ShowAutoScroll, true);
         });
@@ -134,13 +137,14 @@ public class ConsoleTest : BootstrapBlazorTestBase
             builder.Add(a => a.Items,
                 new List<ConsoleMessageItem>()
                 {
-                    new ConsoleMessageItem() {Message = "Test1 "}, new ConsoleMessageItem() {Message = "Test2"}
+                    new ConsoleMessageItem() {Message = "Test1"}, new ConsoleMessageItem() {Message = "Test2"}
                 });
+            builder.Add(a => a.ShowAutoScroll, true);
             builder.Add(a => a.IsAutoScroll, true);
         });
 
         var res = cut.Find(".console-body").GetAttribute("data-scroll");
-        Assert.Equal("on", res);
+        Assert.Equal("auto", res);
     }
 
     [Fact]
@@ -151,9 +155,10 @@ public class ConsoleTest : BootstrapBlazorTestBase
             builder.Add(a => a.Items,
                 new List<ConsoleMessageItem>()
                 {
-                    new ConsoleMessageItem() {Message = "Test1 "}, new ConsoleMessageItem() {Message = "Test2"}
+                    new ConsoleMessageItem() {Message = "Test1"}, new ConsoleMessageItem() {Message = "Test2"}
                 });
             builder.Add(a => a.AutoScrollText, "AutoScrollText");
+            builder.Add(a => a.ShowAutoScroll, true);
         });
 
         Assert.Contains("AutoScrollText", cut.Markup);
@@ -167,11 +172,45 @@ public class ConsoleTest : BootstrapBlazorTestBase
             builder.Add(a => a.Items,
                 new List<ConsoleMessageItem>()
                 {
-                    new ConsoleMessageItem() {Message = "Test1 "}, new ConsoleMessageItem() {Message = "Test2"}
+                    new ConsoleMessageItem() {Message = "Test1"}, new ConsoleMessageItem() {Message = "Test2"}
                 });
             builder.Add(a => a.LightTitle, "LightTitle");
         });
 
         Assert.Contains("LightTitle", cut.Markup);
+    }
+
+    [Fact]
+    public void ClickAutoScroll_OK()
+    {
+        var cut = Context.RenderComponent<Console>(builder =>
+        {
+            builder.Add(a => a.Items,
+                new List<ConsoleMessageItem>()
+                {
+                    new ConsoleMessageItem() {Message = "Test1"}, new ConsoleMessageItem() {Message = "Test2"}
+                });
+            builder.Add(a => a.ShowAutoScroll, true);
+        });
+
+        cut.Find(".card-footer .btn").Click();
+        var res = cut.Instance.IsAutoScroll;
+        Assert.False(res);
+    }
+
+    [Fact]
+    public void MessageItemColor_OK()
+    {
+        var cut = Context.RenderComponent<Console>(builder =>
+        {
+            builder.Add(a => a.Items,
+                new List<ConsoleMessageItem>()
+                {
+                    new ConsoleMessageItem() {Message = "Test1", Color = Color.Danger}, new ConsoleMessageItem() {Message = "Test2"}
+                });
+        });
+
+
+        Assert.Contains("text-danger", cut.Markup);
     }
 }
