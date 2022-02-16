@@ -45,6 +45,21 @@ public class TableDateTimeFilterTest : BootstrapBlazorTestBase
 
         var logic = cut.FindComponent<FilterLogicItem>();
         Assert.NotNull(logic);
+
+        var conditions = cut.Instance.GetFilterConditions();
+        Assert.Empty(conditions);
+
+        var dt = cut.FindComponent<DateTimePicker<DateTime?>>().Instance;
+        cut.InvokeAsync(() => dt.SetValue(DateTime.Now));
+
+        conditions = cut.Instance.GetFilterConditions();
+        Assert.Single(conditions);
+
+        dt = cut.FindComponents<DateTimePicker<DateTime?>>()[1].Instance;
+        cut.InvokeAsync(() => dt.SetValue(DateTime.Now));
+
+        conditions = cut.Instance.GetFilterConditions();
+        Assert.Equal(2, conditions.Count());
     }
 
     [Fact]
