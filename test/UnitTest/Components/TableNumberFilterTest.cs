@@ -147,6 +147,7 @@ public class TableNumberFilterTest : BootstrapBlazorTestBase
             pb.Add(a => a.Column, column);
         });
 
+        // InHeaderRow 非数字类型过滤器测试
         var input = cut.FindComponent<BootstrapInput<string>>().Instance;
         cut.InvokeAsync(() => input.SetValue("10"));
     }
