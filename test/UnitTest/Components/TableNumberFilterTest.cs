@@ -125,4 +125,29 @@ public class TableNumberFilterTest : BootstrapBlazorTestBase
         Assert.Equal(0, condtions!.First().FieldValue);
         Assert.Equal(FilterAction.GreaterThanOrEqual, condtions!.First().FilterAction);
     }
+
+    [Fact]
+    public void NotNumberType_OnFilterValueChanged()
+    {
+        var cut = Context.RenderComponent<TableFilter>(pb =>
+        {
+            var foo = new Foo();
+            var column = new TableColumn<Foo, string>();
+            column.SetParametersAsync(ParameterView.FromDictionary(new Dictionary<string, object?>()
+            {
+                [nameof(TableColumn<Foo, string>.Field)] = foo.Name,
+                [nameof(TableColumn<Foo, string>.FieldExpression)] = foo.GenerateValueExpression(),
+                [nameof(TableColumn<Foo, string>.FilterTemplate)] = new RenderFragment(builder =>
+                {
+                    builder.OpenComponent<NumberFilter<string>>(0);
+                    builder.CloseComponent();
+                })
+            }));
+            pb.Add(a => a.IsHeaderRow, true);
+            pb.Add(a => a.Column, column);
+        });
+
+        var input = cut.FindComponent<BootstrapInput<string>>().Instance;
+        cut.InvokeAsync(() => input.SetValue("10"));
+    }
 }
