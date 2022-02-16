@@ -43,22 +43,29 @@ public class ConsoleTest : BootstrapBlazorTestBase
     [Fact]
     public void OnClear_OK()
     {
-        var res = false;
+        var clearClicked = false;
         var cut = Context.RenderComponent<Console>(builder =>
         {
-            builder.Add(a => a.Items,
-                new List<ConsoleMessageItem>()
-                {
-                    new ConsoleMessageItem() {Message = "Test1"}, new ConsoleMessageItem() {Message = "Test2"}
-                });
-            builder.Add(a => a.OnClear, new Action(() =>
+            builder.Add(a => a.Items, new List<ConsoleMessageItem>()
             {
-                res = true;
+                new ConsoleMessageItem() {Message = "Test1"}, new ConsoleMessageItem() {Message = "Test2"}
+            });
+        });
+        Assert.DoesNotContain("btn-secondary", cut.Markup);
+        Assert.False(clearClicked);
+
+        // 实例触发 OnClear 方法
+        cut.Instance.ClearConsole();
+
+        cut.SetParametersAndRender(pb =>
+        {
+            pb.Add(a => a.OnClear, new Action(() =>
+            {
+                clearClicked = true;
             }));
         });
-
         cut.Find(".btn-secondary").Click();
-        Assert.True(res);
+        Assert.True(clearClicked);
     }
 
     [Fact]
