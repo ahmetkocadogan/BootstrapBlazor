@@ -10,6 +10,44 @@ namespace UnitTest.Components;
 public class TableEnumFilterTest : BootstrapBlazorTestBase
 {
     [Fact]
+    public void Reset_Ok()
+    {
+        var cut = Context.RenderComponent<EnumFilter>(pb =>
+        {
+            pb.Add(a => a.Type, typeof(EnumEducation));
+        });
+
+        var filter = cut.Instance;
+        cut.InvokeAsync(() => filter.Reset());
+    }
+
+    [Fact]
+    public void GetFilterConditions_Ok()
+    {
+        var cut = Context.RenderComponent<EnumFilter>(pb =>
+        {
+            pb.Add(a => a.Type, typeof(EnumEducation));
+        });
+
+        var filter = cut.Instance;
+        IEnumerable<FilterKeyValueAction>? condtions = null;
+        cut.InvokeAsync(() => condtions = filter.GetFilterConditions());
+        Assert.Empty(condtions);
+
+        // Set Value
+        var items = cut.FindAll(".dropdown-item");
+        cut.InvokeAsync(() => items[1].Click());
+        cut.InvokeAsync(() => condtions = filter.GetFilterConditions());
+        Assert.Single(condtions);
+    }
+
+    [Fact]
+    public void InvalidOperationException_Exception()
+    {
+        Assert.ThrowsAny<InvalidOperationException>(() => Context.RenderComponent<EnumFilter>());
+    }
+
+    [Fact]
     public void IsHeaderRow_OnFilterValueChanged()
     {
         var cut = Context.RenderComponent<BootstrapBlazorRoot>(pb =>
@@ -34,7 +72,7 @@ public class TableEnumFilterTest : BootstrapBlazorTestBase
         var items = cut.FindAll(".dropdown-item");
         IEnumerable<FilterKeyValueAction>? condtions = null;
         cut.InvokeAsync(() => items[1].Click());
-        cut.InvokeAsync(() => condtions = cut.FindComponent<StringFilter>().Instance.GetFilterConditions());
+        cut.InvokeAsync(() => condtions = cut.FindComponent<EnumFilter>().Instance.GetFilterConditions());
         Assert.Single(condtions);
     }
 }
