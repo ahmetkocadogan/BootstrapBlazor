@@ -116,6 +116,18 @@ public class TableFilterTest : BootstrapBlazorTestBase
         });
     }
 
+    [Fact]
+    public void FilterKeyValueAction_Ok()
+    {
+        var fkv = new FilterKeyValueAction()
+        {
+            FieldKey = "Key",
+            FilterLogic = FilterLogic.Or
+        };
+        Assert.Equal("Key", fkv.FieldKey);
+        Assert.Equal(FilterLogic.Or, fkv.FilterLogic);
+    }
+
     private static RenderFragment<Foo> CreateTableColumns() => foo => builder =>
     {
         var index = 0;
