@@ -19,306 +19,44 @@ public class CarouselTest : BootstrapBlazorTestBase
         {
             pb.Add(b => b.Images, new List<string>() { "../Images/1.jpg", "../Images/2.jpg", "../Images/3.jpg", "../Images/4.jpg" });
         });
-        Assert.DoesNotContain("is-round", cut.Markup);
-        Assert.DoesNotContain("is-circle", cut.Markup);
-
-        cut.SetParametersAndRender(pb =>
+        Assert.Contains("../Images/1.jpg", cut.Markup);
+        Assert.Contains("../Images/2.jpg", cut.Markup);
+        //Assert.Contains("../Images/3.jpg", cut.Markup);
+        //Assert.Contains("../Images/4.jpg", cut.Markup);
+        cut.SetParametersAndRender<Carousel>(pb =>
+        {
+            pb.Add(b => b.Width, 100);
+        });
+        Assert.Contains("style=\"width: 100px;\"", cut.Markup);
+        cut.SetParametersAndRender<Carousel>(pb =>
         {
             pb.Add(b => b.IsFade, true);
         });
-        Assert.Contains("is-circle", cut.Markup);
+        Assert.Contains("carousel-fade", cut.Markup);
 
-        cut.SetParametersAndRender(pb =>
-        {
-            pb.Add(b => b.Width, 200);
-        });
-        Assert.Contains("is-round", cut.Markup);
     }
 
     [Fact]
-    public void ButtonType_Ok()
-    {
-        var cut = Context.RenderComponent<Button>(pb =>
-        {
-            pb.Add(b => b.ButtonType, ButtonType.Button);
-        });
-        Assert.Contains("type=\"button\"", cut.Markup);
-
-        cut.SetParametersAndRender(pb =>
-        {
-            pb.Add(b => b.ButtonType, ButtonType.Submit);
-        });
-        Assert.Contains("type=\"submit\"", cut.Markup);
-
-        cut.SetParametersAndRender(pb =>
-        {
-            pb.Add(b => b.ButtonType, ButtonType.Reset);
-        });
-        Assert.Contains("type=\"reset\"", cut.Markup);
-    }
-
-    [Theory]
-    [InlineData(Color.Primary, "btn-primary")]
-    [InlineData(Color.Secondary, "btn-secondary")]
-    [InlineData(Color.Info, "btn-info")]
-    [InlineData(Color.Success, "btn-success")]
-    [InlineData(Color.Warning, "btn-warning")]
-    [InlineData(Color.Danger, "btn-danger")]
-    [InlineData(Color.Light, "btn-light")]
-    [InlineData(Color.Dark, "btn-dark")]
-    [InlineData(Color.Link, "btn-link")]
-    public void Color_Ok(Color color, string @class)
-    {
-        var cut = Context.RenderComponent<Button>(pb =>
-        {
-            pb.Add(b => b.Color, color);
-        });
-        Assert.Contains(@class, cut.Markup);
-    }
-
-    [Fact]
-    public void Color_None()
-    {
-        var cut = Context.RenderComponent<Button>(pb =>
-        {
-            pb.Add(b => b.Color, Color.None);
-        });
-        Assert.DoesNotContain("btn-primary", cut.Markup);
-    }
-
-    [Fact]
-    public void Icon_Ok()
-    {
-        var cut = Context.RenderComponent<Button>(pb =>
-        {
-            pb.Add(b => b.Icon, "fa fa-fa");
-        });
-        Assert.Contains("class=\"fa fa-fa\"", cut.Markup);
-        Assert.Contains("fa fa-fw fa-spin fa-spinner", cut.Instance.LoadingIcon);
-
-        cut.SetParametersAndRender(pb =>
-        {
-            pb.Add(b => b.LoadingIcon, "fa fa-fa");
-        });
-        Assert.Contains("fa fa-fa", cut.Instance.LoadingIcon);
-    }
-
-    [Fact]
-    public async Task IsAsync_Ok()
+    public async Task Click_Ok()
     {
         // 同步点击
-        var clicked = false;
-        var cut = Context.RenderComponent<Button>(pb =>
+        string clicked = string.Empty;
+        var cut = Context.RenderComponent<Carousel>(pb =>
         {
-            pb.Add(b => b.IsAsync, false);
-            pb.Add(b => b.OnClick, e => clicked = true);
-        });
-        var b = cut.Find("button");
-        b.Click();
-        Assert.True(clicked);
-
-        // 异步点击
-        var tcs = new TaskCompletionSource<bool>();
-        clicked = false;
-        cut.SetParametersAndRender(pb =>
-        {
-            pb.Add(b => b.IsAsync, true);
-            pb.Add(b => b.OnClick, async e =>
+            pb.Add(b => b.Images, new List<string>() { "../Images/1.jpg", "../Images/2.jpg", "../Images/3.jpg", "../Images/4.jpg" });
+            pb.Add(b => b.OnClick, img =>
             {
-                await Task.Delay(10);
-                clicked = true;
-                tcs.SetResult(true);
-            });
-        });
-        b.Click();
-        Assert.False(clicked);
-        await tcs.Task;
-        Assert.True(clicked);
-
-        // 同步无刷新点击
-        clicked = false;
-        cut.SetParametersAndRender(pb =>
-        {
-            pb.Add(b => b.IsAsync, false);
-            pb.Add(b => b.OnClick, EventCallback<MouseEventArgs>.Empty);
-            pb.Add(b => b.OnClickWithoutRender, () =>
-            {
-                clicked = true;
+                clicked = img;
                 return Task.CompletedTask;
             });
         });
-        b.Click();
-        Assert.True(clicked);
-
-        // 异步无刷新点击
-        clicked = false;
-        tcs = new TaskCompletionSource<bool>();
-        cut.SetParametersAndRender(pb =>
+        var bs = cut.FindAll("img");
+        for (int i = 0; i < bs.Count; i++)
         {
-            pb.Add(b => b.IsAsync, true);
-            pb.Add(b => b.OnClick, EventCallback<MouseEventArgs>.Empty);
-            pb.Add(b => b.OnClickWithoutRender, async () =>
-            {
-                await Task.Delay(10);
-                clicked = true;
-                tcs.SetResult(true);
-            });
-        });
-        b.Click();
-        Assert.False(clicked);
-        Assert.True(cut.Instance.IsDisabled);
-        await tcs.Task;
-        Assert.True(clicked);
-    }
+            var b = bs[i];
+            b.Click();
+            Assert.Equal($"../Images/{i + 1}.jpg", clicked);
+        }
 
-    [Fact]
-    public void Text_Ok()
-    {
-        var cut = Context.RenderComponent<Button>(pb =>
-        {
-            pb.Add(b => b.Text, "Test");
-        });
-        Assert.Contains("<span>Test</span>", cut.Markup);
-
-        cut.SetParametersAndRender(pb =>
-        {
-            pb.Add(b => b.Text, null);
-            pb.AddChildContent("Button-Test");
-        });
-        Assert.Contains("Button-Test", cut.Markup);
-    }
-
-    [Fact]
-    public void IsOutline_Ok()
-    {
-        var cut = Context.RenderComponent<Button>(pb =>
-        {
-            pb.Add(b => b.IsOutline, true);
-        });
-        Assert.Contains("btn-outline-primary", cut.Markup);
-    }
-
-    [Theory]
-    [InlineData(Size.ExtraSmall, "btn-xs")]
-    [InlineData(Size.Small, "btn-sm")]
-    [InlineData(Size.Medium, "btn-md")]
-    [InlineData(Size.Large, "btn-lg")]
-    [InlineData(Size.ExtraLarge, "btn-xl")]
-    [InlineData(Size.ExtraExtraLarge, "btn-xxl")]
-    public void Size_Ok(Size size, string @class)
-    {
-        var cut = Context.RenderComponent<Button>(pb =>
-        {
-            pb.Add(b => b.Size, size);
-        });
-        Assert.Contains(@class, cut.Markup);
-    }
-
-    [Fact]
-    public void IsBlock_Ok()
-    {
-        var cut = Context.RenderComponent<Button>(pb =>
-        {
-            pb.Add(b => b.IsBlock, true);
-        });
-        Assert.Contains("btn-block", cut.Markup);
-    }
-
-    [Fact]
-    public void StopPropagation_Ok()
-    {
-        var cut = Context.RenderComponent<Button>(pb =>
-        {
-            pb.Add(b => b.StopPropagation, true);
-        });
-    }
-
-    [Fact]
-    public void SetDisable_Ok()
-    {
-        var cut = Context.RenderComponent<Button>();
-        Assert.DoesNotContain("disabled", cut.Markup);
-
-        cut.InvokeAsync(() => cut.Instance.SetDisable(true));
-        Assert.Contains("disabled=\"disabled\"", cut.Markup);
-    }
-
-    [Fact]
-    public void Tooltip_Ok()
-    {
-        var cut = Context.RenderComponent<Button>(pb =>
-        {
-            pb.AddChildContent<Tooltip>(pb =>
-            {
-                pb.Add(t => t.Title, "tooltip-title");
-            });
-        });
-
-        // 切换 Disabled 状态移除 Tooltip
-        cut.SetParametersAndRender(pb =>
-        {
-            pb.Add(b => b.IsDisabled, true);
-        });
-
-        cut.SetParametersAndRender(pb =>
-        {
-            pb.Add(b => b.IsDisabled, false);
-        });
-    }
-
-    [Fact]
-    public void Popover_Ok()
-    {
-        var cut = Context.RenderComponent<Button>(pb =>
-        {
-            pb.AddChildContent<Popover>(pb =>
-            {
-                pb.Add(t => t.Title, "popover-title");
-            });
-        });
-
-        // 切换 Disabled 状态移除 Popover
-        cut.SetParametersAndRender(pb =>
-        {
-            pb.Add(b => b.IsDisabled, true);
-        });
-
-        cut.SetParametersAndRender(pb =>
-        {
-            pb.Add(b => b.IsDisabled, false);
-        });
-    }
-
-    [Fact]
-    public async Task ValidateFormButton_Ok()
-    {
-        var valid = false;
-        var tcs = new TaskCompletionSource<bool>();
-        var model = Foo.Generate(Context.Services.GetRequiredService<IStringLocalizer<Foo>>());
-        var cut = Context.RenderComponent<ValidateForm>(pb =>
-        {
-            pb.Add(v => v.Model, model);
-            pb.Add(v => v.OnValidSubmit, context =>
-            {
-                valid = true;
-                tcs.SetResult(true);
-                return Task.CompletedTask;
-            });
-            pb.AddChildContent<BootstrapInput<string>>(pb =>
-            {
-                pb.Add(a => a.Value, model.Name);
-                pb.Add(a => a.ValueChanged, v => model.Name = v);
-                pb.Add(a => a.ValueExpression, model.GenerateValueExpression());
-            });
-            pb.AddChildContent<Button>(pb =>
-            {
-                pb.Add(b => b.IsAsync, true);
-                pb.Add(b => b.ButtonType, ButtonType.Submit);
-            });
-        });
-        cut.Find("input").Change("Test1");
-        cut.Find("form").Submit();
-        await tcs.Task;
-        Assert.True(valid);
     }
 }
