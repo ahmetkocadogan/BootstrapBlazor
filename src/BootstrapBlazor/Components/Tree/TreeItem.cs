@@ -9,13 +9,8 @@ namespace BootstrapBlazor.Components;
 /// <summary>
 /// TreeItem 组件
 /// </summary>
-public class TreeItem
+public class TreeItem : NodeItem
 {
-    /// <summary>
-    /// 获得 父级节点
-    /// </summary>
-    public TreeItem? Parent { get; set; }
-
     /// <summary>
     /// 获得/设置 是否显示正在加载动画 默认为 false
     /// </summary>
@@ -37,34 +32,9 @@ public class TreeItem
     public object? Tag { get; set; }
 
     /// <summary>
-    /// 获得/设置 显示文字
-    /// </summary>
-    public string? Text { get; set; }
-
-    /// <summary>
-    /// 获得/设置 图标
-    /// </summary>
-    public string? Icon { get; set; }
-
-    /// <summary>
     /// 获得/设置 是否被选中
     /// </summary>
     public bool Checked { get; set; }
-
-    /// <summary>
-    /// 获得/设置 是否被禁用 默认 false
-    /// </summary>
-    public bool IsDisabled { get; set; }
-
-    /// <summary>
-    /// 获得/设置 是否展开 默认 false 不展开
-    /// </summary>
-    public bool IsExpanded { get; set; }
-
-    /// <summary>
-    /// 获得/设置 是否选中当前节点
-    /// </summary>
-    public bool IsActive { get; set; }
 
     /// <summary>
     /// 获取/设置 是否有子节点 默认 false 
@@ -75,11 +45,6 @@ public class TreeItem
     /// 获取/设置 节点样色样式 默认 null 未设置
     /// </summary>
     public string? CssClass { get; set; }
-
-    /// <summary>
-    /// 获得/设置 当前节点模板
-    /// </summary>
-    public RenderFragment? Template { get; set; }
 
     /// <summary>
     /// 获得 所有子项集合
