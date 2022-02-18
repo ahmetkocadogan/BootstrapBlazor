@@ -167,7 +167,7 @@ public partial class TransferPanel
     /// 搜索框文本改变时回调此方法
     /// </summary>
     /// <param name="e"></param>
-    protected virtual void OnSearch(ChangeEventArgs e) => SearchText = e.Value?.ToString();
+    protected virtual void OnSearch(ChangeEventArgs e) => SearchText = e.Value!.ToString();
 
     /// <summary>
     /// 搜索文本框按键回调方法
