@@ -119,4 +119,36 @@ public class TreeTest : BootstrapBlazorTestBase
         });
         cut.Contains("Test-Template");
     }
+
+    [Fact]
+    public void OnExpandRowAsync_Ok()
+    {
+        var expanded = false;
+        var cut = Context.RenderComponent<Tree>(pb =>
+        {
+            pb.Add(a => a.OnExpandNode, item =>
+            {
+                expanded = true;
+                return Task.CompletedTask;
+            });
+            pb.Add(a => a.Items, new List<TreeItem>()
+            {
+                new TreeItem()
+                {
+                    Text = "Test1",
+                    Items = new List<TreeItem>()
+                    {
+                        new TreeItem()
+                        {
+                            Text = "Test11",
+                            ShowLoading = true
+                        }
+                    }
+                }
+            });
+        });
+
+        cut.InvokeAsync(() => cut.Find(".fa-caret-right").Click());
+        Assert.True(expanded);
+    }
 }
