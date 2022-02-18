@@ -141,6 +141,7 @@ public class TreeTest : BootstrapBlazorTestBase
                         new TreeItem()
                         {
                             Text = "Test11",
+                            HasChildNode = true,
                             ShowLoading = true
                         }
                     }
