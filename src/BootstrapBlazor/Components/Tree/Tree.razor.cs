@@ -130,16 +130,16 @@ public partial class Tree
 
         // 通过 Items 构造层次结构
         Items ??= new();
-        ActiveItem = Items.CascadingTree();
-        if (ActiveItem != null)
-        {
-            var item = ActiveItem;
-            //while (item.Parent != null)
-            //{
-            //    item.Parent.IsExpanded = true;
-            //    item = item.Parent;
-            //}
-        }
+
+        //if (ActiveItem != null)
+        //{
+        //    var item = ActiveItem;
+        //    while (item.Parent != null)
+        //    {
+        //        item.Parent.IsExpanded = true;
+        //        item = item.Parent;
+        //    }
+        //}
     }
 
     /// <summary>
