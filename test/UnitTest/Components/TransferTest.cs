@@ -3,6 +3,7 @@
 // Website: https://www.blazor.zone or https://argozhang.github.io/
 
 using BootstrapBlazor;
+using BootstrapBlazor.Shared;
 using Microsoft.AspNetCore.Components.Web;
 
 namespace UnitTest.Components;
@@ -141,6 +142,23 @@ public class TransferTest : BootstrapBlazorTestBase
         //要配合ValidateForm
         cut.SetParametersAndRender(builder => builder.Add(s => s.DisplayText, "DisplayTextTest"));
         //Assert.Contains("DisplayTextTest", cut.Markup);
+    }
+
+    [Fact]
+    public void ValidateForm_Ok()
+    {
+        Foo Model=new();
+        var cut = Context.RenderComponent<ValidateForm>(pb =>
+        {
+            pb.Add(a => a.Model, Items);
+            pb.AddChildContent<Transfer<string>>(builder =>
+            {
+                builder.Add(a => a.Items, Items);
+                builder.Add(a => a.DisplayText, "DisplayTextTest");
+                //@bind - Value = "@Model.Hobby"
+            });
+        }) ;
+        Assert.Contains("DisplayTextTest", cut.Markup);
     }
         
     [Fact]
