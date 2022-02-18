@@ -3,6 +3,7 @@
 // Website: https://www.blazor.zone or https://argozhang.github.io/
 
 using BootstrapBlazor;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace UnitTest.Components;
 
@@ -36,35 +37,61 @@ public class TransferTest : BootstrapBlazorTestBase
     public void TransferPanel_Ok()
     {
         var select = false;
-        var cut = Context.RenderComponent<TransferPanel>(builder =>
-        {
-            builder.Add(a => a.Items, Items.ToList());
-            builder.Add(a => a.OnSelectedItemsChanged, () =>
-            {
-                select = true;
-                return Task.CompletedTask;
-            });
-        });
+        var cut = Context.RenderComponent<TransferPanel> ();
         cut.SetParametersAndRender(builder => builder.Add(a => a.Text, "Test"));
         Assert.Contains("Test", cut.Markup);
+
+        //左侧头部复选框
+        var btns = cut.Find(".transfer-panel-header input");
+        btns.Click(); 
+        cut.SetParametersAndRender(builder => builder.Add(a => a.Items, Items.ToList()));
+        btns.Click();
+        Assert.False(select);
 
         cut.SetParametersAndRender(builder => builder.Add(a => a.OnSetItemClass, SetItemClass));
         var items = cut.FindAll(".transfer-panel-list div");
         Assert.Contains("bg-success text-white", items[1].ClassName);
 
+        //搜索框,有item,无item
         Assert.DoesNotContain("transfer-panel-filter", cut.Markup);
         cut.SetParametersAndRender(builder => builder.Add(s => s.ShowSearch, true));
-
         cut.SetParametersAndRender(builder => builder.Add(s => s.SearchPlaceHolderString, "SearchPlaceHolderStringOK"));
         Assert.Contains("SearchPlaceHolderStringOK", cut.Markup);
+        Assert.Contains("transfer-panel-filter", cut.Markup);
+        var searchbar = cut.Find(".transfer-panel-filter input");
+        searchbar.Input("好");
+        Assert.Contains("is-on", cut.Markup);
+        var searchbaritem = cut.FindAll(".transfer-panel-list input");
+        Assert.True(searchbaritem.Count() == 0);
 
-        //左侧头部复选框
-        var btns = cut.Find(".transfer-panel-header input");
-        btns.Click();
+        searchbar.KeyUp(new KeyboardEventArgs() { Key = "Escape" });
+        cut.SetParametersAndRender(builder => builder.Add(a => a.Items, null));
+        searchbar.Input("3");
+        Assert.True(searchbaritem.Count() == 0);
+        cut.SetParametersAndRender(builder => builder.Add(a => a.Items, Items.ToList()));
+        searchbar.Input("3");
+        searchbaritem = cut.FindAll(".transfer-panel-list input");
+        Assert.True(searchbaritem.Count() == 2);
+
+
+        // 选中事件,先测空的OnSelectedItemsChanged分支
+        var item1 = cut.FindAll(".transfer-panel-list input");
+        item1[0].Click();
+
+        cut.SetParametersAndRender(builder => builder.Add(a => a.OnSelectedItemsChanged, () =>
+            {
+                select = true;
+                return Task.CompletedTask;
+            }));
+        item1[0].Click();
         Assert.True(select);
 
+        btns.Click();
+        btns.Click();
+
         cut.SetParametersAndRender(builder => builder.Add(s => s.IsDisabled, true));
-        Assert.Contains(" disabled", cut.Markup);
+        cut.SetParametersAndRender(builder => builder.Add(s => s.IsDisabled, false));
+        Assert.DoesNotContain(" disabled", cut.Markup);
 
     }
 
@@ -86,8 +113,8 @@ public class TransferTest : BootstrapBlazorTestBase
         var cut = Context.RenderComponent<Transfer<string>>(builder =>
         {
             builder.Add(a => a.Items, Items);
-            builder.Add(a => a.LeftPanelText, "LeftPanelTextOK");
         });
+        cut.SetParametersAndRender(builder => builder.Add(s => s.LeftPanelText, "LeftPanelTextOK"));
         Assert.Contains("LeftPanelTextOK", cut.Markup);
 
         cut.SetParametersAndRender(builder => builder.Add(s => s.RightPanelText, "RightPanelTextOK"));
@@ -110,6 +137,10 @@ public class TransferTest : BootstrapBlazorTestBase
 
         cut.SetParametersAndRender(builder => builder.Add(s => s.IsDisabled, true));
         Assert.Contains("transfer-panel-filter", cut.Markup);
+
+        //要配合ValidateForm
+        cut.SetParametersAndRender(builder => builder.Add(s => s.DisplayText, "DisplayTextTest"));
+        //Assert.Contains("DisplayTextTest", cut.Markup);
     }
         
     [Fact]
