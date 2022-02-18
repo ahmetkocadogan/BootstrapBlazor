@@ -107,13 +107,13 @@ public partial class Tree
     /// 获得/设置 树形控件节点点击时回调委托
     /// </summary>
     [Parameter]
-    public Func<TreeItem, Task> OnTreeItemClick { get; set; } = item => Task.CompletedTask;
+    public Func<TreeItem, Task>? OnTreeItemClick { get; set; }
 
     /// <summary>
     /// 获得/设置 树形控件节点选中时回调委托
     /// </summary>
     [Parameter]
-    public Func<List<TreeItem>, Task> OnTreeItemChecked { get; set; } = item => Task.CompletedTask;
+    public Func<List<TreeItem>, Task>? OnTreeItemChecked { get; set; }
 
     /// <summary>
     /// 获得/设置 节点展开前回调委托
@@ -183,16 +183,9 @@ public partial class Tree
     {
         if (IsAccordion)
         {
-            if (Items != null && Items.Contains(item))
+            foreach (var rootNode in Items.Where(p => !p.IsCollapsed && p != item))
             {
-                foreach (var rootNode in Items.Where(p => !p.IsCollapsed && p != item))
-                {
-                    rootNode.IsCollapsed = true;
-                }
-            }
-            else
-            {
-                item.CollapseOtherNodes();
+                rootNode.IsCollapsed = true;
             }
         }
         item.IsCollapsed = !item.IsCollapsed;
