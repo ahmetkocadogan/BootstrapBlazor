@@ -36,6 +36,10 @@ public class TableStringFilterTest : BootstrapBlazorTestBase
         Assert.Equal(2, conditions.Count());
 
         // 测试 FilterLogicItem LogicChanged 代码覆盖率
+        var logicItem = cut.FindComponent<FilterLogicItem>();
+        var item = logicItem.FindAll(".dropdown-item")[0];
+        cut.InvokeAsync(() => item.Click());
+        Assert.Equal(FilterLogic.And, logicItem.Instance.Logic);
     }
 
     [Fact]
