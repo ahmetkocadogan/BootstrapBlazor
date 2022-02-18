@@ -57,14 +57,14 @@ public class TreeItem : NodeItem
     /// </summary>
     public void CascadeSetCheck(bool isChecked)
     {
-        //foreach (var item in Items)
-        //{
-        //    item.Checked = isChecked;
-        //    if (item.Items.Any())
-        //    {
-        //        item.CascadeSetCheck(isChecked);
-        //    }
-        //}
+        foreach (var item in Items)
+        {
+            item.Checked = isChecked;
+            if (item.Items.Any())
+            {
+                item.CascadeSetCheck(isChecked);
+            }
+        }
     }
 
     /// <summary>
