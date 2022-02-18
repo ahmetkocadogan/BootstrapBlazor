@@ -9,7 +9,7 @@ namespace BootstrapBlazor.Components;
 /// <summary>
 /// Tree 组件
 /// </summary>
-public sealed partial class Tree
+public partial class Tree
 {
     /// <summary>
     /// 获得/设置 Tree 组件实例引用
@@ -39,7 +39,7 @@ public sealed partial class Tree
     /// <returns></returns>
     private static string? GetCaretClassString(TreeItem item) => CssBuilder.Default("fa fa-caret-right")
         .AddClass("invisible", !item.HasChildNode && !item.Items.Any())
-        .AddClass("fa-rotate-90", item.IsExpanded)
+        .AddClass("fa-rotate-90", !item.IsCollapsed)
         .Build();
 
     /// <summary>
@@ -57,7 +57,7 @@ public sealed partial class Tree
     /// <param name="item"></param>
     /// <returns></returns>
     private static string? GetTreeNodeClassString(TreeItem item) => CssBuilder.Default("tree-ul")
-        .AddClass("show", item.IsExpanded)
+        .AddClass("show", !item.IsCollapsed)
         .Build();
 
     /// <summary>
@@ -134,11 +134,11 @@ public sealed partial class Tree
         if (ActiveItem != null)
         {
             var item = ActiveItem;
-            while (item.Parent != null)
-            {
-                item.Parent.IsExpanded = true;
-                item = item.Parent;
-            }
+            //while (item.Parent != null)
+            //{
+            //    item.Parent.IsExpanded = true;
+            //    item = item.Parent;
+            //}
         }
     }
 
@@ -185,9 +185,9 @@ public sealed partial class Tree
         {
             if (Items != null && Items.Contains(item))
             {
-                foreach (var rootNode in Items.Where(p => p.IsExpanded && p != item))
+                foreach (var rootNode in Items.Where(p => !p.IsCollapsed && p != item))
                 {
-                    rootNode.IsExpanded = false;
+                    rootNode.IsCollapsed = true;
                 }
             }
             else
@@ -195,7 +195,7 @@ public sealed partial class Tree
                 item.CollapseOtherNodes();
             }
         }
-        item.IsExpanded = !item.IsExpanded;
+        item.IsCollapsed = !item.IsCollapsed;
         if (OnExpandNode != null)
         {
             await OnExpandNode(item);

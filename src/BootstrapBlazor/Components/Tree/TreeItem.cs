@@ -2,8 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 // Website: https://www.blazor.zone or https://argozhang.github.io/
 
-using Microsoft.AspNetCore.Components;
-
 namespace BootstrapBlazor.Components;
 
 /// <summary>
@@ -59,14 +57,14 @@ public class TreeItem : NodeItem
     /// </summary>
     public void CascadeSetCheck(bool isChecked)
     {
-        foreach (var item in Items)
-        {
-            item.Checked = isChecked;
-            if (item.Items.Any())
-            {
-                item.CascadeSetCheck(isChecked);
-            }
-        }
+        //foreach (var item in Items)
+        //{
+        //    item.Checked = isChecked;
+        //    if (item.Items.Any())
+        //    {
+        //        item.CascadeSetCheck(isChecked);
+        //    }
+        //}
     }
 
     /// <summary>
@@ -74,12 +72,13 @@ public class TreeItem : NodeItem
     /// </summary>
     public void CollapseOtherNodes()
     {
-        if (Parent != null)
-        {
-            foreach (var node in Parent.Items.Where(p => p.IsExpanded && p != this))
-            {
-                node.IsExpanded = false;
-            }
-        }
+        //if (!string.IsNullOrEmpty(ParentId))
+        //{
+        //    var parent = Items.FirstOrDefault(i => i.Id)
+        //    foreach (var node in Parent.Items.Where(p => p.IsExpanded && p != this))
+        //    {
+        //        node.IsExpanded = false;
+        //    }
+        //}
     }
 }
