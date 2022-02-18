@@ -10,10 +10,14 @@ public class TreeTest : BootstrapBlazorTestBase
     public void Items_Ok()
     {
         var cut = Context.RenderComponent<Tree>();
-        cut.Contains("tree-root");
+        cut.DoesNotContain("tree-root");
 
-        // 由于 Items 为空不生成 TreeItem
+        // 由于 Items 为空不生成 TreeItem 显示 loading
+        cut.Contains("table-loading");
         cut.DoesNotContain("li");
+
+        cut.SetParametersAndRender(pb => pb.Add(a => a.ShowSkeleton, true));
+        cut.Contains("Loading");
 
         // 设置 Items
         cut.SetParametersAndRender(pb =>
@@ -92,32 +96,42 @@ public class TreeTest : BootstrapBlazorTestBase
             });
             pb.Add(a => a.Items, new List<TreeItem>()
             {
-                new TreeItem() { Text = "Test1", Icon = "fa fa-fa" }
+                new TreeItem() { Text = "Test1", Icon = "fa fa-fa", CssClass = "Test-Class" }
             });
         });
 
         cut.InvokeAsync(() => cut.Find("[type=\"checkbox\"]").Click());
         Assert.Single(checkedLists);
-        Assert.DoesNotContain("fa fa-fa", cut.Markup);
+        cut.DoesNotContain("fa fa-fa");
+        cut.Contains("Test-Class");
 
         cut.SetParametersAndRender(pb =>
         {
             pb.Add(a => a.ShowIcon, true);
         });
-        Assert.Contains("fa fa-fa", cut.Markup);
+        cut.Contains("fa fa-fa");
     }
 
     [Fact]
     public void Template_Ok()
     {
+        var item = new TreeItem()
+        {
+            Text = "Test1",
+            Key = "TestKey",
+            Tag = "TestTag",
+            Template = builder => builder.AddContent(0, "Test-Template")
+        };
         var cut = Context.RenderComponent<Tree>(pb =>
         {
             pb.Add(a => a.Items, new List<TreeItem>()
             {
-                new TreeItem() { Text = "Test1", Template = builder => builder.AddContent(0, "Test-Template")}
+                item
             });
         });
         cut.Contains("Test-Template");
+        Assert.Equal("TestKey", item.Key);
+        Assert.Equal("TestTag", item.Tag);
     }
 
     [Fact]
@@ -151,5 +165,22 @@ public class TreeTest : BootstrapBlazorTestBase
 
         cut.InvokeAsync(() => cut.Find(".fa-caret-right").Click());
         Assert.True(expanded);
+    }
+
+    [Fact]
+    public void GetAllSubItems_Ok()
+    {
+        var items = new List<TreeItem>()
+        {
+            new TreeItem() { Text = "Test1", Id = "01" },
+            new TreeItem() { Text = "Test2", Id = "02", ParentId = "01" },
+            new TreeItem() { Text = "Test3", Id = "03", ParentId = "02" },
+        };
+
+        var data = items.CascadingTree();
+        Assert.Single(data);
+
+        var subs = data.First().GetAllSubItems();
+        Assert.Equal(2, subs.Count());
     }
 }
