@@ -106,4 +106,17 @@ public class TreeTest : BootstrapBlazorTestBase
         });
         Assert.Contains("fa fa-fa", cut.Markup);
     }
+
+    [Fact]
+    public void Template_Ok()
+    {
+        var cut = Context.RenderComponent<Tree>(pb =>
+        {
+            pb.Add(a => a.Items, new List<TreeItem>()
+            {
+                new TreeItem() { Text = "Test1", Template = builder => builder.AddContent(0, "Test-Template")}
+            });
+        });
+        cut.Contains("Test-Template");
+    }
 }
