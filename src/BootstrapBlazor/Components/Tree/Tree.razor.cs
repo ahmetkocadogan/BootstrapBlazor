@@ -128,9 +128,6 @@ public partial class Tree
     {
         base.OnParametersSet();
 
-        // 通过 Items 构造层次结构
-        Items ??= new();
-
         //if (ActiveItem != null)
         //{
         //    var item = ActiveItem;
