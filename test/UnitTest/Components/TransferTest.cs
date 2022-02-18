@@ -170,22 +170,5 @@ public class TransferTest : BootstrapBlazorTestBase
         btns[1].Click();
         Assert.True(selecteditems.Any() && selecteditems.Count()== Items.Count());
 
-     }
-
-    //[Fact]
-    //public void OnTransferEnd_Ok()
-    //{
-    //    var TransferEnd = false;
-    //    var cut = Context.RenderComponent<Transfer<string>>(builder =>
-    //    {
-    //        builder.Add(a => a.OnTransferEnd, () =>
-    //        {
-    //            TransferEnd = true;
-    //            return Task.FromResult(true);
-    //        });
-    //    });
-
-    //    cut.InvokeAsync(() => cut.Instance.TransferEndAsync());
-    //    Assert.True(TransferEnd);
-    //}
+     } 
 }
