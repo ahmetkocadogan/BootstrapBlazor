@@ -15,11 +15,12 @@ public class TreeTest : BootstrapBlazorTestBase
         // 由于 Items 为空不生成 TreeItem
         cut.DoesNotContain("li");
 
+        // 设置 Items
         cut.SetParametersAndRender(pb =>
         {
             pb.Add(a => a.Items, new List<TreeItem>()
             {
-                new TreeItem() { Text = "Test1", id },
+                new TreeItem() { Text = "Test1", Id = "1" },
                 new TreeItem() { Text = "Test2", IsActive = true }
             });
         });
