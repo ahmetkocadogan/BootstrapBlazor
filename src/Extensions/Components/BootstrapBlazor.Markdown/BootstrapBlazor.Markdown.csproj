@@ -10,8 +10,11 @@
     <Content Remove="wwwroot\lib\tui.editor\toastui-jquery-editor.js" />
     <Content Remove="wwwroot\lib\tui.editor\zh-cn.js" />
     <None Include="*.json" />
-    <None Include="wwwroot\lib\tui.editor\toastui-jquery-editor.js" />
     <None Include="wwwroot\lib\tui.editor\zh-cn.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\highlight" />
   </ItemGroup>
 
 </Project>
