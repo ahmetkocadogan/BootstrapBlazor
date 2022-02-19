@@ -191,7 +191,7 @@ public partial class Transfer<TValue>
             source.RemoveAll(i => items.Contains(i));
             target.AddRange(items);
 
-            CurrentValueAsString = string.Join(",", source.Select(i => i.Value));
+            CurrentValueAsString = string.Join(",", target.Select(i => i.Value));
 
             if (OnSelectedItemsChanged != null)
             {
