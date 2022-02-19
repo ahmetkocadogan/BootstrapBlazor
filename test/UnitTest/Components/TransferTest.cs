@@ -10,6 +10,25 @@ namespace UnitTest.Components;
 
 public class TransferTest : BootstrapBlazorTestBase
 {
+    [Fact]
+    public void Items_Ok()
+    {
+        // 未设置 Itms 为空
+        var cut = Context.RenderComponent<Transfer<string>>();
+        cut.Contains("class=\"transfer\"");
+
+        // 设置 Items
+        cut.SetParametersAndRender(pb =>
+        {
+            pb.Add(a => a.Value, "2");
+            pb.Add(a => a.Items, new List<SelectedItem>()
+            {
+                new("1", "Test1"),
+                new("2", "Test2")
+            });
+        });
+        cut.Contains("transfer-panel");
+    }
 
     [NotNull]
     private IEnumerable<SelectedItem>? Items { get; set; } = Enumerable.Range(1, 15).Select(i => new SelectedItem()
