@@ -67,6 +67,27 @@ public class TransferTest : BootstrapBlazorTestBase
         cut.InvokeAsync(() => button.Instance.OnClick.InvokeAsync());
         Assert.Equal("1", cut.Instance.Value.First().Value);
     }
+
+    [Fact]
+    public void Int_Value()
+    {
+        var cut = Context.RenderComponent<Transfer<int>>(pb =>
+        {
+            pb.Add(a => a.Items, new List<SelectedItem>()
+            {
+                new("1", "Test1"),
+                new("2", "Test2")
+            });
+        });
+
+        // 选中右侧第一项
+        var checkbox = cut.FindComponents<Checkbox<SelectedItem>>().First(i => i.Instance.DisplayText == "Test1");
+        cut.InvokeAsync(() => checkbox.Instance.SetState(CheckboxState.Checked));
+        var button = cut.FindComponents<Button>()[1];
+        cut.InvokeAsync(() => button.Instance.OnClick.InvokeAsync());
+        Assert.Equal(0, cut.Instance.Value);
+    }
+
     [Fact]
     public void TransferItem_Ok()
     {
