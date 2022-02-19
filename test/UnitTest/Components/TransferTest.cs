@@ -153,6 +153,33 @@ public class TransferTest : BootstrapBlazorTestBase
         Assert.Equal("1,2", foo.Name);
     }
 
+    [Fact]
+    public void ShowSearch_Ok()
+    {
+        var cut = Context.RenderComponent<Transfer<string>>(pb =>
+        {
+            pb.Add(a => a.Value, "2");
+            pb.Add(a => a.Items, new List<SelectedItem>()
+            {
+                new("1", "Test1"),
+                new("2", "Test2")
+            });
+            pb.Add(a => a.ShowSearch, true);
+            pb.Add(a => a.LeftButtonText, "LeftButtonText");
+            pb.Add(a => a.RightButtonText, "RightButtonText");
+            pb.Add(a => a.LeftPannelSearchPlaceHolderString, "LeftPannelSearchPlaceHolderString");
+            pb.Add(a => a.RightPannelSearchPlaceHolderString, "RightPannelSearchPlaceHolderString");
+        });
+
+        // ShowSearch
+        cut.Contains("transfer-panel-filter");
+
+        cut.Contains("LeftButtonText");
+        cut.Contains("RightButtonText");
+        cut.Contains("LeftPannelSearchPlaceHolderString");
+        cut.Contains("RightPannelSearchPlaceHolderString");
+    }
+
     //[Fact]
     //public void Items_Ok()
     //{
