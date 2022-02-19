@@ -3,7 +3,6 @@
 // Website: https://www.blazor.zone or https://argozhang.github.io/
 
 using BootstrapBlazor.Shared;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace UnitTest.Components;
 
@@ -27,6 +26,26 @@ public class TransferTest : BootstrapBlazorTestBase
             });
         });
         cut.Contains("transfer-panel");
+    }
+
+    [Fact]
+    public void EnumerableString_Value()
+    {
+        var cut = Context.RenderComponent<Transfer<IEnumerable<string>>>(pb =>
+        {
+            pb.Add(a => a.Items, new List<SelectedItem>()
+            {
+                new("1", "Test1"),
+                new("2", "Test2")
+            });
+        });
+
+        // 选中右侧第一项
+        var checkbox = cut.FindComponents<Checkbox<SelectedItem>>().First(i => i.Instance.DisplayText == "Test1");
+        cut.InvokeAsync(() => checkbox.Instance.SetState(CheckboxState.Checked));
+        var button = cut.FindComponents<Button>()[1];
+        cut.InvokeAsync(() => button.Instance.OnClick.InvokeAsync());
+        Assert.Equal("2", cut.Instance.Value.First());
     }
 
     [Fact]
