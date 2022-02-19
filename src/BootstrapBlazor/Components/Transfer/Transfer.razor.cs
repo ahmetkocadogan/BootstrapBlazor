@@ -53,6 +53,9 @@ public partial class Transfer<TValue>
     /// 获得/设置 组件绑定数据项集合
     /// </summary>
     [Parameter]
+#if NET6_0_OR_GREATER
+    [EditorRequired]
+#endif
     public IEnumerable<SelectedItem>? Items { get; set; }
 
     /// <summary>
