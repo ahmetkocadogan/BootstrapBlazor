@@ -126,6 +126,33 @@ public class TransferTest : BootstrapBlazorTestBase
         Assert.Single(rightItems);
     }
 
+    [Fact]
+    public void ValidateForm_Ok()
+    {
+        var foo = new Foo();
+        var cut = Context.RenderComponent<ValidateForm>(pb =>
+        {
+            pb.Add(a => a.Model, foo);
+            pb.AddChildContent<Transfer<string>>(pb =>
+            {
+                pb.Add(a => a.Value, foo.Name);
+                pb.Add(a => a.ValueChanged, EventCallback.Factory.Create<string>(Context, v => foo.Name = v));
+                pb.Add(a => a.ValueExpression, foo.GenerateValueExpression());
+                pb.Add(a => a.Items, new List<SelectedItem>()
+                {
+                    new("1", "Test1"),
+                    new("2", "Test2")
+                });
+            });
+        });
+        var checkbox = cut.FindComponent<Checkbox<SelectedItem>>();
+        cut.InvokeAsync(() => checkbox.Instance.SetState(CheckboxState.Checked));
+        var button = cut.FindComponents<Button>()[1];
+        cut.InvokeAsync(() => button.Instance.OnClick.InvokeAsync());
+
+        Assert.Equal("1,2", foo.Name);
+    }
+
     //[Fact]
     //public void Items_Ok()
     //{
