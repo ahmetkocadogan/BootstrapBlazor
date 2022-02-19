@@ -40,12 +40,12 @@ public class TransferTest : BootstrapBlazorTestBase
             });
         });
 
-        // 选中右侧第一项
+        // 选中左侧第一项
         var checkbox = cut.FindComponents<Checkbox<SelectedItem>>().First(i => i.Instance.DisplayText == "Test1");
         cut.InvokeAsync(() => checkbox.Instance.SetState(CheckboxState.Checked));
         var button = cut.FindComponents<Button>()[1];
         cut.InvokeAsync(() => button.Instance.OnClick.InvokeAsync());
-        Assert.Equal("2", cut.Instance.Value.First());
+        Assert.Equal("1", cut.Instance.Value.First());
     }
 
     [Fact]
