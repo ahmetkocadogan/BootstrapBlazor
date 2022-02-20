@@ -7,11 +7,9 @@
 
   <ItemGroup>
     <Content Remove="*.json" />
-    <Content Remove="wwwroot\lib\tui.editor\toastui-jquery-editor.js" />
-    <Content Remove="wwwroot\lib\tui.editor\zh-cn.js" />
+    <Content Remove="wwwroot\lib\**\*.*" />
     <None Include="*.json" />
-    <None Include="wwwroot\lib\tui.editor\toastui-jquery-editor.js" />
-    <None Include="wwwroot\lib\tui.editor\zh-cn.js" />
+    <None Include="wwwroot\lib\**\*.*" />
   </ItemGroup>
 
 </Project>
