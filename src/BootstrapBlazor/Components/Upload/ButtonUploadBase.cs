@@ -118,7 +118,7 @@ public abstract class ButtonUploadBase<TValue> : SingleUploadBase<TValue>
             ".cs" or ".html" or ".vb" => "fa-file-code-o",
             ".pdf" => "fa-file-pdf-o",
             ".zip" or ".rar" or ".iso" => "fa-file-archive-o",
-            ".txt" or ".log" or ".iso" => "fa-file-text-o",
+            ".txt" or ".log" => "fa-file-text-o",
             ".jpg" or ".jpeg" or ".png" or ".bmp" or ".gif" => "fa-file-image-o",
             _ => "fa-file-o"
         };

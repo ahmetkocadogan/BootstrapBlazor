@@ -357,12 +357,72 @@ public class UploadTest : BootstrapBlazorTestBase
         })));
     }
 
+
+    [Fact]
+    public void ButtonUpload_OnGetFileFormat_Ok()
+    {
+        var cut = Context.RenderComponent<ButtonUpload<string>>(pb =>
+        {
+            pb.Add(a => a.DefaultFileList, new List<UploadFile>()
+            {
+                new UploadFile() { FileName  = "1.csv" },
+                new UploadFile() { FileName  = "1.xls" },
+                new UploadFile() { FileName  = "1.xlsx" },
+                new UploadFile() { FileName  = "1.doc" },
+                new UploadFile() { FileName  = "1.docx" },
+                new UploadFile() { FileName  = "1.dot" },
+                new UploadFile() { FileName  = "1.ppt" },
+                new UploadFile() { FileName  = "1.pptx" },
+                new UploadFile() { FileName  = "1.wav" },
+                new UploadFile() { FileName  = "1.mp3" },
+                new UploadFile() { FileName  = "1.mp4" },
+                new UploadFile() { FileName  = "1.mov" },
+                new UploadFile() { FileName  = "1.mkv" },
+                new UploadFile() { FileName  = "1.cs" },
+                new UploadFile() { FileName  = "1.html" },
+                new UploadFile() { FileName  = "1.vb" },
+                new UploadFile() { FileName  = "1.pdf" },
+                new UploadFile() { FileName  = "1.zip" },
+                new UploadFile() { FileName  = "1.rar" },
+                new UploadFile() { FileName  = "1.iso" },
+                new UploadFile() { FileName  = "1.txt" },
+                new UploadFile() { FileName  = "1.log" },
+                new UploadFile() { FileName  = "1.jpg" },
+                new UploadFile() { FileName  = "1.jpeg" },
+                new UploadFile() { FileName  = "1.png" },
+                new UploadFile() { FileName  = "1.bmp" },
+                new UploadFile() { FileName  = "1.gif" },
+                new UploadFile() { FileName  = "1.test" }
+            });
+        });
+        cut.Contains("fa-file-excel-o");
+        cut.Contains("fa-file-word-o");
+        cut.Contains("fa-file-powerpoint-o");
+        cut.Contains("fa-file-audio-o");
+        cut.Contains("fa-file-video-o");
+        cut.Contains("fa-file-code-o");
+        cut.Contains("fa-file-pdf-o");
+        cut.Contains("fa-file-archive-o");
+        cut.Contains("fa-file-text-o");
+        cut.Contains("fa-file-image-o");
+        cut.Contains("fa-file-o");
+
+        cut.SetParametersAndRender(pb =>
+        {
+            pb.Add(a => a.OnGetFileFormat, extensions =>
+            {
+                return "fa-format-test";
+            });
+        });
+        cut.Contains("fa-format-test");
+    }
+
     [ExcludeFromCodeCoverage]
     private class MockBrowserFile : IBrowserFile
     {
-        public MockBrowserFile()
+        public MockBrowserFile(string name = "UploadTestFile")
         {
-            Name = "UploadTestFile";
+            Name = name;
             LastModified = DateTimeOffset.Now;
             Size = 10;
             ContentType = "jpg";
