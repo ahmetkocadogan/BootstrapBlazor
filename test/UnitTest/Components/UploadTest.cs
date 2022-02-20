@@ -218,6 +218,127 @@ public class UploadTest : BootstrapBlazorTestBase
         Assert.False(invalid);
     }
 
+    [Fact]
+    public void ButtonUpload_Ok()
+    {
+        UploadFile? uploadFile = null;
+        var cut = Context.RenderComponent<ButtonUpload<string>>(pb =>
+        {
+            pb.Add(a => a.IsSingle, true);
+            pb.Add(a => a.BrowserButtonClass, "browser-class");
+            pb.Add(a => a.BrowserButtonIcon, "fa fa-browser-icon");
+        });
+        cut.Contains("fa fa-browser-icon");
+        cut.Contains("browser-class");
+        cut.DoesNotContain("form-label");
+
+        // DefaultFileList
+        cut.SetParametersAndRender(pb =>
+        {
+            pb.Add(a => a.ShowProgress, true);
+            pb.Add(a => a.DefaultFileList, new List<UploadFile>()
+            {
+                new UploadFile() { FileName  = "Test-File" }
+            });
+            pb.Add(a => a.OnChange, file =>
+            {
+                uploadFile = file;
+                return Task.CompletedTask;
+            });
+        });
+        var input = cut.FindComponent<InputFile>();
+        cut.InvokeAsync(() => input.Instance.OnChange.InvokeAsync(new InputFileChangeEventArgs(new List<MockBrowserFile>()
+        {
+            new MockBrowserFile()
+        })));
+    }
+
+    [Fact]
+    public void ButtonUpload_IsDisabled_Ok()
+    {
+        var cut = Context.RenderComponent<ButtonUpload<string>>(pb =>
+        {
+            pb.Add(a => a.IsDisabled, true);
+        });
+        var button = cut.Find(".btn-browser");
+        Assert.Contains("disabled=\"disabled\"", button.ToMarkup());
+
+        cut.SetParametersAndRender(pb =>
+        {
+            pb.Add(a => a.IsDisabled, false);
+            pb.Add(a => a.IsSingle, false);
+        });
+        Assert.DoesNotContain("disabled", button.ToMarkup());
+
+        cut.SetParametersAndRender(pb =>
+        {
+            pb.Add(a => a.IsDisabled, false);
+            pb.Add(a => a.IsSingle, true);
+        });
+        Assert.DoesNotContain("disabled", button.ToMarkup());
+
+        cut.SetParametersAndRender(pb =>
+        {
+            pb.Add(a => a.IsDisabled, false);
+            pb.Add(a => a.IsSingle, true);
+        });
+        var input = cut.FindComponent<InputFile>();
+        cut.InvokeAsync(() => input.Instance.OnChange.InvokeAsync(new InputFileChangeEventArgs(new List<MockBrowserFile>()
+        {
+            new MockBrowserFile()
+        })));
+        Assert.Contains("disabled=\"disabled\"", button.ToMarkup());
+    }
+
+    [Fact]
+    public void ButtonUpload_ValidateForm_Ok()
+    {
+        var foo = new Foo();
+        var cut = Context.RenderComponent<ValidateForm>(pb =>
+        {
+            pb.Add(a => a.Model, foo);
+            pb.AddChildContent<ButtonUpload<string>>(pb =>
+            {
+                pb.Add(a => a.Value, foo.Name);
+                pb.Add(a => a.ValueExpression, foo.GenerateValueExpression());
+            });
+        });
+        cut.Contains("form-label");
+    }
+
+    [Fact]
+    public void ButtonUpload_OnDeleteFile_Ok()
+    {
+        UploadFile? deleteFile = null;
+        var cut = Context.RenderComponent<ButtonUpload<string>>(pb =>
+        {
+            pb.Add(a => a.IsSingle, false);
+            pb.Add(a => a.DefaultFileList, new List<UploadFile>()
+            {
+                new UploadFile() { FileName  = "Test-File" }
+            });
+            pb.Add(a => a.OnDelete, file =>
+            {
+                deleteFile = file;
+                return Task.FromResult(true);
+            });
+        });
+        cut.InvokeAsync(() => cut.Find(".fa-trash-o.text-danger").Click());
+        Assert.NotNull(deleteFile);
+
+        deleteFile = null;
+        // 上传失败测试
+        cut.SetParametersAndRender(pb =>
+        {
+            pb.Add(a => a.DefaultFileList, new List<UploadFile>()
+            {
+                new UploadFile() { FileName  = "Test-File2", Code = 1001 }
+            });
+        });
+        cut.InvokeAsync(() => cut.Find(".fa-trash-o.text-danger").Click());
+        Assert.NotNull(deleteFile);
+    }
+
     [ExcludeFromCodeCoverage]
     private class MockBrowserFile : IBrowserFile
     {
