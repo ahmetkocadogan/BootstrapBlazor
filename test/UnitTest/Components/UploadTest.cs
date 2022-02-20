@@ -339,6 +339,24 @@ public class UploadTest : BootstrapBlazorTestBase
         Assert.NotNull(deleteFile);
     }
 
+    [Fact]
+    public void ButtonUpload_ShowProgress_Ok()
+    {
+        var cut = Context.RenderComponent<ButtonUpload<string>>(pb =>
+        {
+            pb.Add(a => a.ShowProgress, true);
+            pb.Add(a => a.OnChange, async file =>
+            {
+                await file.SaveToFile("1.txt");
+            });
+        });
+        var input = cut.FindComponent<InputFile>();
+        cut.InvokeAsync(() => input.Instance.OnChange.InvokeAsync(new InputFileChangeEventArgs(new List<MockBrowserFile>()
+        {
+            new MockBrowserFile()
+        })));
+    }
+
     [ExcludeFromCodeCoverage]
     private class MockBrowserFile : IBrowserFile
     {
@@ -346,7 +364,7 @@ public class UploadTest : BootstrapBlazorTestBase
         {
             Name = "UploadTestFile";
             LastModified = DateTimeOffset.Now;
-            Size = 10 * 1024;
+            Size = 10;
             ContentType = "jpg";
         }
 
@@ -360,7 +378,7 @@ public class UploadTest : BootstrapBlazorTestBase
 
         public Stream OpenReadStream(long maxAllowedSize = 512000, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return new MemoryStream(new byte[] { 0x01, 0x02 });
         }
     }
 }
