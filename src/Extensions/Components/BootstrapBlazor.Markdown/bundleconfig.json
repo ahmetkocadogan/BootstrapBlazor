@@ -2,7 +2,7 @@
   {
     "outputFileName": "wwwroot/css/bootstrap.blazor.markdown.min.css",
     "inputFiles": [
-      "wwwroot/lib/tui.editor/*.min.css"
+      "wwwroot/lib/**/*.min.css"
     ]
   },
   {
@@ -14,7 +14,7 @@
   {
     "outputFileName": "wwwroot/js/bootstrap.blazor.markdown.min.js",
     "inputFiles": [
-      "wwwroot/lib/tui.editor/*.min.js",
+      "wwwroot/lib/**/*.min.js",
       "Components/**/*.min.js"
     ],
     "minify": {
@@ -22,22 +22,5 @@
       "renameLocals": true
     },
     "sourceMap": false
-  },
-  {
-    "outputFileName": "wwwroot/js/bootstrap.blazor.markdown.highlight.min.js",
-    "inputFiles": [
-      "wwwroot/lib/highlight/*.min.js"
-    ],
-    "minify": {
-      "enabled": false,
-      "renameLocals": true
-    },
-    "sourceMap": false
-  },
-  {
-  "outputFileName": "wwwroot/css/bootstrap.blazor.markdown.highlight.min.css",
-  "inputFiles": [
-    "wwwroot/lib/highlight/*.min.css"
-  ]
-}
+  }
 ]
