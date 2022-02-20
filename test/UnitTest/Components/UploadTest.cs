@@ -357,6 +357,27 @@ public class UploadTest : BootstrapBlazorTestBase
         })));
     }
 
+    [Fact]
+    public void ButtonUpload_IsDirectory_Ok()
+    {
+        var fileNames = new List<string>();
+        var cut = Context.RenderComponent<ButtonUpload<string>>(pb =>
+        {
+            pb.Add(a => a.IsDirectory, true);
+            pb.Add(a => a.OnChange, file =>
+            {
+                fileNames.Add(file.OriginFileName!);
+                return Task.CompletedTask;
+            });
+        });
+        var input = cut.FindComponent<InputFile>();
+        cut.InvokeAsync(() => input.Instance.OnChange.InvokeAsync(new InputFileChangeEventArgs(new List<MockBrowserFile>()
+        {
+            new MockBrowserFile(),
+            new MockBrowserFile("UploadTestFile2")
+        })));
+        Assert.Equal(2, fileNames.Count);
+    }
 
     [Fact]
     public void ButtonUpload_OnGetFileFormat_Ok()
