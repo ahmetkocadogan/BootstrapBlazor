@@ -423,7 +423,8 @@ public class UploadTest : BootstrapBlazorTestBase
                 new UploadFile() { FileName  = "1.png" },
                 new UploadFile() { FileName  = "1.bmp" },
                 new UploadFile() { FileName  = "1.gif" },
-                new UploadFile() { FileName  = "1.test" }
+                new UploadFile() { FileName  = "1.test" },
+                new UploadFile() { FileName  = "1" }
             });
         });
         cut.Contains("fa-file-excel-o");

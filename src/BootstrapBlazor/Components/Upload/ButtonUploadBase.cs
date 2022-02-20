@@ -28,7 +28,7 @@ public abstract class ButtonUploadBase<TValue> : SingleUploadBase<TValue>
     /// 获得/设置 设置文件格式图标回调委托
     /// </summary>
     [Parameter]
-    public Func<string, string>? OnGetFileFormat { get; set; }
+    public Func<string?, string>? OnGetFileFormat { get; set; }
 
     /// <summary>
     /// OnInitialized 方法
@@ -107,7 +107,11 @@ public abstract class ButtonUploadBase<TValue> : SingleUploadBase<TValue>
     protected string? GetFileFormatClassString(UploadFile item)
     {
         var builder = CssBuilder.Default("fa");
-        var fileExtension = Path.GetExtension(item.OriginFileName ?? item.FileName)?.ToLowerInvariant() ?? "";
+        var fileExtension = Path.GetExtension(item.OriginFileName ?? item.FileName);
+        if (!string.IsNullOrEmpty(fileExtension))
+        {
+            fileExtension = fileExtension.ToLowerInvariant();
+        }
         var icon = OnGetFileFormat?.Invoke(fileExtension) ?? fileExtension switch
         {
             ".csv" or ".xls" or ".xlsx" => "fa-file-excel-o",
