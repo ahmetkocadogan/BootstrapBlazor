@@ -380,6 +380,16 @@ public class UploadTest : BootstrapBlazorTestBase
     }
 
     [Fact]
+    public void ButtonUpload_Accept_Ok()
+    {
+        var cut = Context.RenderComponent<ButtonUpload<string>>(pb =>
+        {
+            pb.Add(a => a.Accept, ".jpg");
+        });
+        cut.Contains("accept=\".jpg\"");
+    }
+
+    [Fact]
     public void ButtonUpload_OnGetFileFormat_Ok()
     {
         var cut = Context.RenderComponent<ButtonUpload<string>>(pb =>
