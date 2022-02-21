@@ -507,6 +507,24 @@ public class UploadTest : BootstrapBlazorTestBase
     }
 
     [Fact]
+    public void CardUpload_Reset()
+    {
+        var cut = Context.RenderComponent<CardUpload<string>>();
+        cut.InvokeAsync(() => cut.Instance.Reset());
+        Assert.Null(cut.Instance.DefaultFileList);
+
+        cut.SetParametersAndRender(pb =>
+        {
+            pb.Add(a => a.DefaultFileList, new List<UploadFile>()
+            {
+                new UploadFile() { FileName  = "Test-File1.text" }
+            });
+        });
+        cut.InvokeAsync(() => cut.Instance.Reset());
+        Assert.Empty(cut.Instance.DefaultFileList);
+    }
+
+    [Fact]
     public void CardUpload_ValidateForm_Ok()
     {
         var foo = new Foo();
