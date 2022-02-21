@@ -505,15 +505,32 @@ public class UploadTest : BootstrapBlazorTestBase
             new MockBrowserFile("test.png")
         })));
     }
+
+    [Fact]
+    public void CardUpload_ValidateForm_Ok()
+    {
+        var foo = new Foo();
+        var cut = Context.RenderComponent<ValidateForm>(pb =>
+        {
+            pb.Add(a => a.Model, foo);
+            pb.AddChildContent<CardUpload<string>>(pb =>
+            {
+                pb.Add(a => a.Value, foo.Name);
+                pb.Add(a => a.ValueExpression, foo.GenerateValueExpression());
+            });
+        });
+        cut.Contains("form-label");
+    }
+
     [ExcludeFromCodeCoverage]
     private class MockBrowserFile : IBrowserFile
     {
-        public MockBrowserFile(string name = "UploadTestFile")
+        public MockBrowserFile(string name = "UploadTestFile", string contentType = "text")
         {
             Name = name;
             LastModified = DateTimeOffset.Now;
             Size = 10;
-            ContentType = "jpg";
+            ContentType = contentType;
         }
 
         public string Name { get; }
