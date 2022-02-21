@@ -68,12 +68,6 @@ public abstract class MultipleUploadBase<TValue> : UploadBase<TValue>
     protected bool GetShowProgress(UploadFile item) => ShowProgress && !item.Uploaded;
 
     /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    protected virtual List<UploadFile> GetUploadFiles() => DefaultFileList == null ? UploadFiles : DefaultFileList.Concat(UploadFiles).ToList();
-
-    /// <summary>
     /// 清空上传列表方法
     /// </summary>
     public override void Reset()

@@ -27,7 +27,7 @@ public abstract class SingleUploadBase<TValue> : MultipleUploadBase<TValue>
     /// 获得当前图片集合
     /// </summary>
     /// <returns></returns>
-    protected override List<UploadFile> GetUploadFiles()
+    protected virtual List<UploadFile> GetUploadFiles()
     {
         var ret = new List<UploadFile>();
         if (IsSingle)
