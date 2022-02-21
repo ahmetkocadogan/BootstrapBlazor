@@ -48,14 +48,17 @@ public abstract class MultipleUploadBase<TValue> : UploadBase<TValue>
     protected override async Task<bool> OnFileDelete(UploadFile item)
     {
         var ret = await base.OnFileDelete(item);
-        if (ret && item != null)
+        if (ret)
         {
             UploadFiles.Remove(item);
             if (!string.IsNullOrEmpty(item.ValidateId))
             {
                 await JSRuntime.InvokeVoidAsync(null, "bb_tooltip", item.ValidateId, "dispose");
             }
-            DefaultFileList?.Remove(item);
+            if (DefaultFileList != null)
+            {
+                DefaultFileList.Remove(item);
+            }
         }
         return ret;
     }
