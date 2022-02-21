@@ -326,6 +326,7 @@ public class UploadTest : BootstrapBlazorTestBase
         });
         cut.InvokeAsync(() => cut.Find(".fa-trash-o.text-danger").Click());
         Assert.NotNull(deleteFile);
+        Assert.Null(deleteFile!.Error);
 
         deleteFile = null;
         // 上传失败测试
