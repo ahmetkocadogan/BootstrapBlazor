@@ -74,7 +74,7 @@ public abstract class UploadBase<TValue> : ValidateBase<TValue>, IUpload
     /// </summary>
     /// <param name="item"></param>
     /// <returns></returns>
-    protected string? GetFileName(UploadFile? item = null) => item?.OriginFileName ?? item?.FileName ?? Value?.ToString();
+    protected string? GetFileName(UploadFile? item) => item?.OriginFileName ?? item?.FileName;
 
     /// <summary>
     /// 触发客户端验证方法
@@ -147,16 +147,10 @@ public abstract class UploadBase<TValue> : ValidateBase<TValue>, IUpload
         }
         if (type.IsAssignableTo(typeof(List<IBrowserFile>)))
         {
-            CurrentValue = (TValue)(object)UploadFiles;
+            CurrentValue = (TValue)(object)UploadFiles.Select(f => f.File).ToList();
         }
         return Task.CompletedTask;
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <returns></returns>
-    protected virtual Task OnFileBrowser() => Task.CompletedTask;
 
     /// <summary>
     /// 
