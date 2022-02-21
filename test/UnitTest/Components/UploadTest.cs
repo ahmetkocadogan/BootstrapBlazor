@@ -180,6 +180,30 @@ public class UploadTest : BootstrapBlazorTestBase
     }
 
     [Fact]
+    public void AvatarUpload_Value_Ok()
+    {
+        var cut = Context.RenderComponent<AvatarUpload<IBrowserFile>>(pb => pb.Add(a => a.IsSingle, true));
+        var input = cut.FindComponent<InputFile>();
+        cut.InvokeAsync(() => input.Instance.OnChange.InvokeAsync(new InputFileChangeEventArgs(new List<MockBrowserFile>()
+        {
+            new MockBrowserFile()
+        })));
+        Assert.Equal("UploadTestFile", cut.Instance.Value!.Name);
+    }
+
+    [Fact]
+    public void AvatarUpload_ListValue_Ok()
+    {
+        var cut = Context.RenderComponent<AvatarUpload<List<IBrowserFile>>>();
+        var input = cut.FindComponent<InputFile>();
+        cut.InvokeAsync(() => input.Instance.OnChange.InvokeAsync(new InputFileChangeEventArgs(new List<MockBrowserFile>()
+        {
+            new MockBrowserFile()
+        })));
+        Assert.Single(cut.Instance.Value);
+    }
+
+    [Fact]
     public void AvatarUpload_ValidateForm_Ok()
     {
         var invalid = false;
@@ -237,10 +261,6 @@ public class UploadTest : BootstrapBlazorTestBase
         cut.SetParametersAndRender(pb =>
         {
             pb.Add(a => a.ShowProgress, true);
-            pb.Add(a => a.DefaultFileList, new List<UploadFile>()
-            {
-                new UploadFile() { FileName  = "Test-File" }
-            });
             pb.Add(a => a.OnChange, file =>
             {
                 uploadFile = file;
