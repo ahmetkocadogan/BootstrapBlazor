@@ -67,8 +67,6 @@ public partial class AvatarUpload<TValue>
     /// <returns></returns>
     protected override async Task OnFileChange(InputFileChangeEventArgs args)
     {
-        await base.OnFileChange(args);
-
         CurrentFile = new UploadFile()
         {
             OriginFileName = args.File.Name,
@@ -86,6 +84,9 @@ public partial class AvatarUpload<TValue>
         }
 
         UploadFiles.Add(CurrentFile);
+
+        await base.OnFileChange(args);
+
         ValidateFile();
 
         // ValidateFile 后 IsValid 才有值
