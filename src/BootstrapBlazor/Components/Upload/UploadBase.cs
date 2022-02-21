@@ -165,14 +165,13 @@ public abstract class UploadBase<TValue> : ValidateBase<TValue>, IUpload
     protected virtual IDictionary<string, object> GetUploadAdditionalAttributes()
     {
         var ret = new Dictionary<string, object>
-            {
-                { "hidden", "hidden" }
-            };
+        {
+            { "hidden", "hidden" }
+        };
         if (!string.IsNullOrEmpty(Accept))
         {
             ret.Add("accept", Accept);
         }
-
         return ret;
     }
 
