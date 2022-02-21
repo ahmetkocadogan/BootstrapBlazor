@@ -189,6 +189,7 @@ public class UploadTest : BootstrapBlazorTestBase
             pb.Add(a => a.Model, foo);
             pb.AddChildContent<AvatarUpload<string>>(pb =>
             {
+                pb.Add(a => a.Accept, "Image");
                 pb.Add(a => a.Value, foo.Name);
                 pb.Add(a => a.ValueExpression, foo.GenerateValueExpression());
             });
