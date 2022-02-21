@@ -449,6 +449,62 @@ public class UploadTest : BootstrapBlazorTestBase
         cut.Contains("fa-format-test");
     }
 
+    [Fact]
+    public void CardUpload_Ok()
+    {
+        var zoom = false;
+        var deleted = false;
+        var cut = Context.RenderComponent<CardUpload<string>>(pb =>
+        {
+            pb.Add(a => a.OnZoomAsync, file =>
+            {
+                zoom = true;
+                return Task.CompletedTask;
+            });
+            pb.Add(a => a.OnDelete, file =>
+            {
+                deleted = true;
+                return Task.FromResult(true);
+            });
+            pb.Add(a => a.DefaultFileList, new List<UploadFile>()
+            {
+                new UploadFile() { FileName  = "Test-File1.text" },
+                new UploadFile() { FileName  = "Test-File2.jpg" },
+                new UploadFile() { PrevUrl  = "Test-File3.png" },
+                new UploadFile() { PrevUrl  = "Test-File4.bmp" },
+                new UploadFile() { PrevUrl  = "Test-File5.jpeg" },
+                new UploadFile() { PrevUrl  = "Test-File6.gif" },
+                new UploadFile() { FileName = null! }
+            });
+        });
+
+        // OnZoom
+        cut.InvokeAsync(() => cut.Find(".btn-outline-secondary").Click());
+        Assert.True(zoom);
+
+        // OnDelete
+        cut.InvokeAsync(() => cut.Find(".btn-outline-danger").Click());
+        Assert.True(deleted);
+
+        // ShowProgress
+        cut.SetParametersAndRender(pb =>
+        {
+            pb.Add(a => a.ShowProgress, true);
+            pb.Add(a => a.OnChange, async file =>
+            {
+                await file.SaveToFile("1.txt");
+            });
+        });
+        var input = cut.FindComponent<InputFile>();
+        cut.InvokeAsync(() => input.Instance.OnChange.InvokeAsync(new InputFileChangeEventArgs(new List<MockBrowserFile>()
+        {
+            new MockBrowserFile("test.txt", "Image-Png")
+        })));
+        cut.InvokeAsync(() => input.Instance.OnChange.InvokeAsync(new InputFileChangeEventArgs(new List<MockBrowserFile>()
+        {
+            new MockBrowserFile("test.png")
+        })));
+    }
     [ExcludeFromCodeCoverage]
     private class MockBrowserFile : IBrowserFile
     {
